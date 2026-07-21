@@ -10,6 +10,7 @@ import { ConfirmDialog } from '../common/ConfirmDialog';
 import { DashboardView } from '../dashboard/DashboardView';
 import { CasesView } from '../cases/CasesView';
 import { FamiliesView } from '../families/FamiliesView';
+import { ConversationsView } from '../conversations/ConversationsView';
 import { CalendarView } from '../calendar/CalendarView';
 import { TasksView } from '../tasks/TasksView';
 import { DocumentsView } from '../documents/DocumentsView';
@@ -31,6 +32,8 @@ export const AppLayout: React.FC = () => {
         return <CasesView />;
       case 'Families':
         return <FamiliesView />;
+      case 'Conversations':
+        return <ConversationsView />;
       case 'Calendar':
         return <CalendarView />;
       case 'Tasks':

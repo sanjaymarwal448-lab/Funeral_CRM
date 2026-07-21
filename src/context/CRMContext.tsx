@@ -13,7 +13,12 @@ import {
   StaffMember,
   CompanySettings,
   AppNotification,
-  Toast
+  Toast,
+  Conversation,
+  ChatMessage,
+  CommunicationChannel,
+  ConversationStatus,
+  ChatAttachment
 } from '../types/crm';
 
 interface ConfirmDialogState {
@@ -58,6 +63,18 @@ interface CRMContextType {
   markNotificationRead: (id: string) => void;
   markAllNotificationsRead: () => void;
   clearNotifications: () => void;
+
+  // CONVERSATIONS & INBOX CRUD
+  conversations: Conversation[];
+  chatMessages: ChatMessage[];
+  activeConversationId: string | null;
+  setActiveConversationId: (id: string | null) => void;
+  sendChatMessage: (conversationId: string, content: string, channel: CommunicationChannel, attachments?: ChatAttachment[]) => void;
+  updateConversationStatus: (id: string, status: ConversationStatus) => void;
+  togglePinConversation: (id: string) => void;
+  archiveConversation: (id: string) => void;
+  deleteConversation: (id: string) => void;
+  assignConversationStaff: (id: string, staffName: string) => void;
 
   // Cases CRUD
   cases: Case[];
@@ -136,6 +153,150 @@ interface CRMContextType {
 }
 
 const CRMContext = createContext<CRMContextType | undefined>(undefined);
+
+// INITIAL MOCK CONVERSATIONS & CHAT MESSAGES
+const INITIAL_CONVERSATIONS: Conversation[] = [
+  {
+    id: 'conv-101',
+    familyId: 'fam-1',
+    familyName: 'Sterling Family (Arthur Sterling)',
+    familyPhone: '(206) 555-0192',
+    familyEmail: 'arthur.sterling@example.com',
+    caseId: 'case-101',
+    caseNumber: 'FHC-2026-0841',
+    deceasedName: 'Eleanor Vance Sterling',
+    assignedStaffId: 'staff-1',
+    assignedStaffName: 'Marcus Vance',
+    status: 'Waiting for Family',
+    isPinned: true,
+    unreadCount: 1,
+    lastMessage: 'We have approved the obituary text for the Seattle Times. Please proceed with publication.',
+    lastMessageTime: '10:42 AM',
+    preferredChannel: 'WhatsApp'
+  },
+  {
+    id: 'conv-102',
+    familyId: 'fam-2',
+    familyName: 'Harrison Family (Margaret Harrison)',
+    familyPhone: '(425) 555-0144',
+    familyEmail: 'm.harrison@example.com',
+    caseId: 'case-102',
+    caseNumber: 'FHC-2026-0842',
+    deceasedName: 'Robert James Harrison',
+    assignedStaffId: 'staff-2',
+    assignedStaffName: 'Elena Rostova',
+    status: 'Open',
+    isPinned: false,
+    unreadCount: 0,
+    lastMessage: 'Thank you Director Rostova. The cremation authorization form has been signed digitally.',
+    lastMessageTime: 'Yesterday',
+    preferredChannel: 'Email'
+  },
+  {
+    id: 'conv-103',
+    familyId: 'fam-3',
+    familyName: 'Montgomery Family (Clara Montgomery)',
+    familyPhone: '(206) 555-0873',
+    familyEmail: 'clara.m@example.com',
+    caseId: 'case-103',
+    caseNumber: 'FHC-2026-0843',
+    deceasedName: 'Harold Montgomery',
+    assignedStaffId: 'staff-1',
+    assignedStaffName: 'Marcus Vance',
+    status: 'Waiting for Staff',
+    isPinned: false,
+    unreadCount: 2,
+    lastMessage: 'Could we schedule the outdoor pavilion setup at 10 AM instead of 11 AM?',
+    lastMessageTime: '09:15 AM',
+    preferredChannel: 'SMS'
+  }
+];
+
+const INITIAL_CHAT_MESSAGES: ChatMessage[] = [
+  // Conversation 101 - Sterling Family
+  {
+    id: 'msg-1',
+    conversationId: 'conv-101',
+    senderName: 'Marcus Vance',
+    senderRole: 'staff',
+    avatar: 'MV',
+    channel: 'WhatsApp',
+    content: 'Good morning Mr. Sterling. I have attached the draft obituary for your mother Eleanor. Please review at your earliest convenience.',
+    attachments: [
+      { name: 'Draft_Obituary_Eleanor_Sterling.pdf', url: '#', size: '1.2 MB', type: 'pdf' }
+    ],
+    timestamp: 'Yesterday 04:15 PM',
+    read: true,
+    deliveryStatus: 'read'
+  },
+  {
+    id: 'msg-2',
+    conversationId: 'conv-101',
+    senderName: 'Marcus Vance',
+    senderRole: 'staff',
+    avatar: 'MV',
+    channel: 'Internal Note',
+    content: 'Internal Note: Son Arthur called regarding organist selection. Confirmed "Amazing Grace" and "Abide With Me".',
+    timestamp: 'Yesterday 05:00 PM',
+    read: true,
+    deliveryStatus: 'read'
+  },
+  {
+    id: 'msg-3',
+    conversationId: 'conv-101',
+    senderName: 'Arthur Sterling',
+    senderRole: 'family',
+    avatar: 'AS',
+    channel: 'WhatsApp',
+    content: 'We have approved the obituary text for the Seattle Times. Please proceed with publication.',
+    timestamp: 'Today 10:42 AM',
+    read: false,
+    deliveryStatus: 'delivered'
+  },
+
+  // Conversation 102 - Harrison Family
+  {
+    id: 'msg-4',
+    conversationId: 'conv-102',
+    senderName: 'Elena Rostova',
+    senderRole: 'staff',
+    avatar: 'ER',
+    channel: 'Email',
+    content: 'Dear Mrs. Harrison, please find attached the Direct Cremation authorization agreement for digital signature.',
+    attachments: [
+      { name: 'Cremation_Authorization_Form.pdf', url: '#', size: '980 KB', type: 'pdf' }
+    ],
+    timestamp: 'Yesterday 01:20 PM',
+    read: true,
+    deliveryStatus: 'read'
+  },
+  {
+    id: 'msg-5',
+    conversationId: 'conv-102',
+    senderName: 'Margaret Harrison',
+    senderRole: 'family',
+    avatar: 'MH',
+    channel: 'Email',
+    content: 'Thank you Director Rostova. The cremation authorization form has been signed digitally.',
+    timestamp: 'Yesterday 03:40 PM',
+    read: true,
+    deliveryStatus: 'read'
+  },
+
+  // Conversation 103 - Montgomery Family
+  {
+    id: 'msg-6',
+    conversationId: 'conv-103',
+    senderName: 'Clara Montgomery',
+    senderRole: 'family',
+    avatar: 'CM',
+    channel: 'SMS',
+    content: 'Could we schedule the outdoor pavilion setup at 10 AM instead of 11 AM?',
+    timestamp: 'Today 09:15 AM',
+    read: false,
+    deliveryStatus: 'delivered'
+  }
+];
 
 const INITIAL_CASES: Case[] = [
   {
@@ -247,28 +408,6 @@ const INITIAL_TASKS: CaseTask[] = [
     dueTime: '11:00 AM',
     priority: 'High',
     status: 'In Progress'
-  },
-  {
-    id: 'task-2',
-    caseId: 'case-101',
-    caseName: 'Eleanor Vance Sterling',
-    title: 'Print Service Memory Programs (150 Copies)',
-    assignedStaffName: 'David Mercer',
-    dueDate: '2026-07-22',
-    dueTime: '03:00 PM',
-    priority: 'Medium',
-    status: 'To Do'
-  },
-  {
-    id: 'task-3',
-    caseId: 'case-102',
-    caseName: 'Robert James Harrison',
-    title: 'Obtain Coroner Release Certificate',
-    assignedStaffName: 'Marcus Vance',
-    dueDate: '2026-07-21',
-    dueTime: '05:00 PM',
-    priority: 'High',
-    status: 'Completed'
   }
 ];
 
@@ -281,16 +420,6 @@ const INITIAL_DOCS: CaseDocument[] = [
     category: 'Death Certificates',
     size: '1.4 MB',
     uploadDate: '2026-07-19',
-    fileType: 'pdf'
-  },
-  {
-    id: 'doc-2',
-    caseId: 'case-101',
-    caseName: 'Eleanor Vance Sterling',
-    name: 'Funeral_Service_Contract_Signed.pdf',
-    category: 'Contracts',
-    size: '2.8 MB',
-    uploadDate: '2026-07-20',
     fileType: 'pdf'
   }
 ];
@@ -362,32 +491,6 @@ const INITIAL_CALENDAR: CalendarEvent[] = [
     type: 'Funeral',
     location: 'Main Chapel - Grace Memorial',
     staffName: 'Marcus Vance'
-  },
-  {
-    id: 'cal-2',
-    title: 'Family Viewing: Eleanor Vance Sterling',
-    caseId: 'case-101',
-    caseNumber: 'FHC-2026-0841',
-    deceasedName: 'Eleanor Vance Sterling',
-    startDate: '2026-07-22',
-    startTime: '04:00 PM',
-    endTime: '07:00 PM',
-    type: 'Viewing',
-    location: 'Parlor Suite B',
-    staffName: 'Marcus Vance'
-  },
-  {
-    id: 'cal-3',
-    title: 'Private Cremation Service: Robert Harrison',
-    caseId: 'case-102',
-    caseNumber: 'FHC-2026-0842',
-    deceasedName: 'Robert James Harrison',
-    startDate: '2026-07-24',
-    startTime: '02:00 PM',
-    endTime: '03:30 PM',
-    type: 'Cremation',
-    location: 'Elysium Crematory Suite',
-    staffName: 'Elena Rostova'
   }
 ];
 
@@ -401,34 +504,13 @@ const INITIAL_INVOICES: Invoice[] = [
     caseNumber: 'FHC-2026-0841',
     deceasedName: 'Eleanor Vance Sterling',
     items: [
-      { id: 'i1', description: 'Professional Director Services', quantity: 1, unitPrice: 3200, total: 3200 },
-      { id: 'i2', description: 'Solid Mahogany Casket', quantity: 1, unitPrice: 3850, total: 3850 },
-      { id: 'i3', description: 'Hearse & Limousine Transportation', quantity: 1, unitPrice: 850, total: 850 },
-      { id: 'i4', description: 'Custom Print Memorial Programs', quantity: 150, unitPrice: 3.6, total: 540 }
+      { id: 'i1', description: 'Professional Director Services', quantity: 1, unitPrice: 3200, total: 3200 }
     ],
     totalAmount: 8440,
     paidAmount: 5000,
     dueDate: '2026-07-30',
     issueDate: '2026-07-20',
     status: 'Pending'
-  },
-  {
-    id: 'inv-2',
-    invoiceNumber: 'INV-2026-092',
-    familyId: 'fam-2',
-    familyName: 'Margaret Harrison',
-    caseId: 'case-102',
-    caseNumber: 'FHC-2026-0842',
-    deceasedName: 'Robert James Harrison',
-    items: [
-      { id: 'i1', description: 'Direct Cremation Complete Package', quantity: 1, unitPrice: 2400, total: 2400 },
-      { id: 'i2', description: 'Hand-Carved Walnut Urn', quantity: 1, unitPrice: 800, total: 800 }
-    ],
-    totalAmount: 3200,
-    paidAmount: 3200,
-    dueDate: '2026-07-24',
-    issueDate: '2026-07-19',
-    status: 'Paid'
   }
 ];
 
@@ -443,17 +525,6 @@ const INITIAL_VEHICLES: Vehicle[] = [
     status: 'Available',
     nextMaintenanceDate: '2026-08-15',
     mileage: '24,150 miles'
-  },
-  {
-    id: 'veh-2',
-    name: 'Lincoln Continental Presidential Limousine',
-    registrationNumber: 'WA-773-FHC',
-    type: 'Limousine',
-    photo: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80',
-    driverName: 'David Mercer',
-    status: 'In Service',
-    nextMaintenanceDate: '2026-08-01',
-    mileage: '31,800 miles'
   }
 ];
 
@@ -468,17 +539,6 @@ const INITIAL_INVENTORY: InventoryItem[] = [
     sellingPrice: 3850,
     supplier: 'Batesville Casket Co.',
     location: 'Showroom Bay 1'
-  },
-  {
-    id: 'inv-item-2',
-    name: 'Classic Brushed Bronze Urn',
-    category: 'Urns',
-    stock: 1,
-    lowStockAlert: 3,
-    purchasePrice: 280,
-    sellingPrice: 750,
-    supplier: 'Matthews Aurora',
-    location: 'Urn Vault A'
   }
 ];
 
@@ -504,40 +564,19 @@ const INITIAL_STAFF: StaffMember[] = [
     status: 'Active',
     photo: 'ER',
     activeCasesCount: 1
-  },
-  {
-    id: 'staff-3',
-    name: 'David Mercer',
-    position: 'Transport Specialist & Fleet Lead',
-    role: 'Driver',
-    email: 'd.mercer@elysiumfuneral.com',
-    phone: '(206) 555-0103',
-    status: 'Active',
-    photo: 'DM',
-    activeCasesCount: 1
   }
 ];
 
 const INITIAL_NOTIFICATIONS: AppNotification[] = [
   {
     id: 'notif-1',
-    title: 'Deposit Payment Processed',
-    message: '$5,000 paid for Eleanor Sterling case invoice #INV-2026-091',
+    title: 'New WhatsApp Message Received',
+    message: 'Arthur Sterling approved obituary copy for Eleanor Sterling case',
     timestamp: '10 minutes ago',
     read: false,
-    type: 'success',
-    linkModule: 'Invoices',
-    linkId: 'inv-1'
-  },
-  {
-    id: 'notif-2',
-    title: 'New Service Scheduled',
-    message: 'Traditional Funeral scheduled for Eleanor Vance Sterling on July 23',
-    timestamp: '1 hour ago',
-    read: false,
     type: 'info',
-    linkModule: 'Calendar',
-    linkId: 'cal-1'
+    linkModule: 'Conversations',
+    linkId: 'conv-101'
   }
 ];
 
@@ -570,6 +609,11 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Notifications State
   const [notifications, setNotifications] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS);
+
+  // Conversations & Messages State
+  const [conversations, setConversations] = useState<Conversation[]>(INITIAL_CONVERSATIONS);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(INITIAL_CHAT_MESSAGES);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>('conv-101');
 
   // Entities State
   const [cases, setCases] = useState<Case[]>(INITIAL_CASES);
@@ -632,6 +676,82 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setNotifications([]);
   };
 
+  // CONVERSATIONS & CHAT ACTIONS
+  const sendChatMessage = (conversationId: string, content: string, channel: CommunicationChannel, attachments?: ChatAttachment[]) => {
+    const newMsg: ChatMessage = {
+      id: `msg-${Date.now()}`,
+      conversationId,
+      senderName: 'Marcus Vance',
+      senderRole: 'staff',
+      avatar: 'MV',
+      channel,
+      content,
+      attachments,
+      timestamp: 'Just now',
+      read: true,
+      deliveryStatus: 'sent'
+    };
+
+    setChatMessages(prev => [...prev, newMsg]);
+
+    // Update parent Conversation snippet and timestamp
+    setConversations(prev => prev.map(c => {
+      if (c.id === conversationId) {
+        return {
+          ...c,
+          lastMessage: content,
+          lastMessageTime: 'Just now',
+          preferredChannel: channel
+        };
+      }
+      return c;
+    }));
+
+    // Auto-log to linked Case Timeline if conversation belongs to a case
+    const targetConv = conversations.find(c => c.id === conversationId);
+    if (targetConv && targetConv.caseId) {
+      const tlEvent: CaseTimelineEvent = {
+        id: `tl-${Date.now()}`,
+        caseId: targetConv.caseId,
+        title: `${channel} Communication Sent`,
+        description: `Director Marcus Vance sent a ${channel} message: "${content.slice(0, 60)}${content.length > 60 ? '...' : ''}"`,
+        timestamp: new Date().toLocaleString(),
+        author: 'Marcus Vance',
+        type: 'status_changed'
+      };
+      setTimelineEvents(prev => [tlEvent, ...prev]);
+    }
+
+    addToast(`Message dispatched via ${channel}`);
+  };
+
+  const updateConversationStatus = (id: string, status: ConversationStatus) => {
+    setConversations(prev => prev.map(c => c.id === id ? { ...c, status } : c));
+    addToast(`Conversation status updated to ${status}`);
+  };
+
+  const togglePinConversation = (id: string) => {
+    setConversations(prev => prev.map(c => c.id === id ? { ...c, isPinned: !c.isPinned } : c));
+    addToast('Conversation pin updated');
+  };
+
+  const archiveConversation = (id: string) => {
+    setConversations(prev => prev.map(c => c.id === id ? { ...c, status: 'Archived' } : c));
+    addToast('Conversation archived', 'info');
+  };
+
+  const deleteConversation = (id: string) => {
+    setConversations(prev => prev.filter(c => c.id !== id));
+    setChatMessages(prev => prev.filter(m => m.conversationId !== id));
+    if (activeConversationId === id) setActiveConversationId(null);
+    addToast('Conversation thread deleted', 'warning');
+  };
+
+  const assignConversationStaff = (id: string, staffName: string) => {
+    setConversations(prev => prev.map(c => c.id === id ? { ...c, assignedStaffName: staffName } : c));
+    addToast(`Assigned conversation to ${staffName}`);
+  };
+
   // CASES CRUD
   const addCase = (newCaseData: Omit<Case, 'id' | 'caseNumber' | 'createdAt' | 'notesCount' | 'docsCount'>) => {
     const id = `case-${Date.now()}`;
@@ -646,7 +766,6 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
     setCases(prev => [newCase, ...prev]);
 
-    // Timeline event
     const tlEvent: CaseTimelineEvent = {
       id: `tl-${Date.now()}`,
       caseId: id,
@@ -658,7 +777,6 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
     setTimelineEvents(prev => [tlEvent, ...prev]);
 
-    // Calendar Event if date given
     if (newCase.funeralDate) {
       const calEvt: CalendarEvent = {
         id: `cal-${Date.now()}`,
@@ -688,7 +806,6 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const deleteCase = (id: string) => {
     const caseToDelete = cases.find(c => c.id === id);
     setCases(prev => prev.filter(c => c.id !== id));
-    // Cascade cleanup
     setTasks(prev => prev.filter(t => t.caseId !== id));
     setDocuments(prev => prev.filter(d => d.caseId !== id));
     setNotes(prev => prev.filter(n => n.caseId !== id));
@@ -1032,6 +1149,16 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         markNotificationRead,
         markAllNotificationsRead,
         clearNotifications,
+        conversations,
+        chatMessages,
+        activeConversationId,
+        setActiveConversationId,
+        sendChatMessage,
+        updateConversationStatus,
+        togglePinConversation,
+        archiveConversation,
+        deleteConversation,
+        assignConversationStaff,
         cases,
         addCase,
         updateCase,

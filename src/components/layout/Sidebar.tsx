@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   FolderKanban,
   Users,
+  MessageSquare,
   Calendar,
   CheckSquare,
   FileText,
@@ -24,16 +25,18 @@ interface NavItem {
 }
 
 export const Sidebar: React.FC = () => {
-  const { currentModule, setCurrentModule, isSidebarCollapsed, setIsSidebarCollapsed, cases, tasks, invoices } = useCRM();
+  const { currentModule, setCurrentModule, isSidebarCollapsed, setIsSidebarCollapsed, cases, tasks, invoices, conversations } = useCRM();
 
   const activeCasesCount = cases.filter(c => c.status !== 'Completed' && c.status !== 'Archived').length;
   const pendingTasksCount = tasks.filter(t => t.status !== 'Completed').length;
   const pendingInvoicesCount = invoices.filter(i => i.status === 'Pending' || i.status === 'Overdue').length;
+  const unreadConversationsCount = conversations.reduce((sum, c) => sum + c.unreadCount, 0);
 
   const navItems: NavItem[] = [
     { name: 'Dashboard', icon: LayoutDashboard },
     { name: 'Cases', icon: FolderKanban, badge: activeCasesCount },
     { name: 'Families', icon: Users },
+    { name: 'Conversations', icon: MessageSquare, badge: unreadConversationsCount },
     { name: 'Calendar', icon: Calendar },
     { name: 'Tasks', icon: CheckSquare, badge: pendingTasksCount },
     { name: 'Documents', icon: FileText },
@@ -86,7 +89,7 @@ export const Sidebar: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontWeight: 800,
+                fontWeight: '800',
                 color: '#ffffff',
                 fontSize: '15px'
               }}
@@ -94,10 +97,10 @@ export const Sidebar: React.FC = () => {
               E
             </div>
             <div>
-              <div style={{ fontSize: '15px', fontWeight: 800, letterSpacing: '0.02em', color: '#ffffff' }}>
+              <div style={{ fontSize: '15px', fontWeight: '800', letterSpacing: '0.02em', color: '#ffffff' }}>
                 ELYSIUM
               </div>
-              <div style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              <div style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '600' }}>
                 Funeral CRM
               </div>
             </div>
@@ -112,7 +115,7 @@ export const Sidebar: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontWeight: 800,
+              fontWeight: '800',
               color: '#ffffff'
             }}
           >

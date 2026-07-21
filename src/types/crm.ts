@@ -8,6 +8,62 @@ export type ServiceType =
   | 'Celebration of Life' 
   | 'Repatriation';
 
+export type CommunicationChannel = 
+  | 'WhatsApp' 
+  | 'Email' 
+  | 'SMS' 
+  | 'Internal Note' 
+  | 'AI Voice Transcript' 
+  | 'Website Chat';
+
+export type ConversationStatus = 
+  | 'Open' 
+  | 'Waiting for Family' 
+  | 'Waiting for Staff' 
+  | 'Resolved' 
+  | 'Closed' 
+  | 'Archived';
+
+export interface ChatAttachment {
+  name: string;
+  url: string;
+  size: string;
+  type: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  conversationId: string;
+  senderName: string;
+  senderRole: 'family' | 'staff' | 'ai';
+  avatar: string;
+  channel: CommunicationChannel;
+  content: string;
+  attachments?: ChatAttachment[];
+  timestamp: string;
+  read: boolean;
+  deliveryStatus: 'sent' | 'delivered' | 'read';
+}
+
+export interface Conversation {
+  id: string;
+  familyId: string;
+  familyName: string;
+  familyPhone: string;
+  familyEmail: string;
+  caseId?: string;
+  caseNumber?: string;
+  deceasedName?: string;
+  assignedStaffId?: string;
+  assignedStaffName?: string;
+  status: ConversationStatus;
+  isPinned: boolean;
+  unreadCount: number;
+  lastMessage: string;
+  lastMessageTime: string;
+  preferredChannel: CommunicationChannel;
+}
+
 export interface Case {
   id: string;
   caseNumber: string;
@@ -96,7 +152,7 @@ export interface CalendarEvent {
   caseId?: string;
   caseNumber?: string;
   deceasedName?: string;
-  startDate: string; // YYYY-MM-DD
+  startDate: string;
   startTime: string;
   endTime: string;
   type: 'Funeral' | 'Viewing' | 'Burial' | 'Cremation' | 'Family Meeting';
