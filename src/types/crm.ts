@@ -43,6 +43,7 @@ export interface ChatMessage {
   timestamp: string;
   read: boolean;
   deliveryStatus: 'sent' | 'delivered' | 'read';
+  aiAssisted?: boolean;
 }
 
 export interface Conversation {
@@ -62,6 +63,18 @@ export interface Conversation {
   lastMessage: string;
   lastMessageTime: string;
   preferredChannel: CommunicationChannel;
+  isAiEnabled?: boolean;
+}
+
+export interface WhatsAppSettings {
+  metaAppId: string;
+  phoneNumberId: string;
+  accessToken: string;
+  webhookSecret: string;
+  isAutoResponderEnabled: boolean;
+  aiModel: 'Gemini 1.5 Pro' | 'GPT-4o Funeral Care' | 'Claude 3.5 Sonnet';
+  aiTone: 'Empathetic & Dignified' | 'Formal & Professional' | 'Warm & Supportive';
+  autoCreateDraftCases: boolean;
 }
 
 export interface Case {

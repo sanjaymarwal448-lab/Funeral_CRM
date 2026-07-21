@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useCRM } from '../../context/CRMContext';
 import { Conversation, ChatMessage, CommunicationChannel, ConversationStatus } from '../../types/crm';
+import { WhatsAppSimulator } from './WhatsAppSimulator';
 import {
   Search,
   MessageSquare,
@@ -22,7 +23,8 @@ import {
   Plus,
   FileText,
   Clock,
-  Sparkles
+  Sparkles,
+  Zap
 } from 'lucide-react';
 
 export const ConversationsView: React.FC = () => {
@@ -37,12 +39,12 @@ export const ConversationsView: React.FC = () => {
     archiveConversation,
     deleteConversation,
     assignConversationStaff,
+    generateAiReplyForThread,
     setDrawerItem,
     setActiveCaseId,
     setCurrentModule,
     openConfirmDialog,
-    cases,
-    staff
+    whatsAppSettings
   } = useCRM();
 
   // Filters State
@@ -53,6 +55,9 @@ export const ConversationsView: React.FC = () => {
   const [composerContent, setComposerContent] = useState<string>('');
   const [selectedChannel, setSelectedChannel] = useState<CommunicationChannel>('WhatsApp');
   const [attachedFiles, setAttachedFiles] = useState<{ name: string; url: string; size: string; type: string }[]>([]);
+
+  // Simulator Modal State
+  const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
 
   // Active Conversation Record
   const activeConv = useMemo(() => {
@@ -145,9 +150,14 @@ export const ConversationsView: React.FC = () => {
         <div style={{ padding: '16px', borderBottom: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Inbox Conversations</h3>
-            <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '999px', backgroundColor: 'var(--primary-light)', color: 'var(--primary-accent)' }}>
-              {conversations.filter(c => c.unreadCount > 0).length} Unread
-            </span>
+            <button
+              className="btn btn-secondary btn-sm"
+              style={{ fontSize: '11px', color: '#059669', borderColor: '#a7f3d0' }}
+              onClick={() => setIsSimulatorOpen(true)}
+              title="Test WhatsApp Cloud API & AI Auto-Responder"
+            >
+              <Zap size={12} /> WhatsApp Simulator
+            </button>
           </div>
 
           <div className="search-input-wrapper">
@@ -275,9 +285,16 @@ export const ConversationsView: React.FC = () => {
                 {activeConv.familyName.charAt(0)}
               </div>
               <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-main)' }}>
-                  {activeConv.familyName}
-                </h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-main)' }}>
+                    {activeConv.familyName}
+                  </h3>
+                  {whatsAppSettings.isAutoResponderEnabled && (
+                    <span style={{ fontSize: '10px', fontWeight: 700, color: '#059669', backgroundColor: '#ecfdf5', padding: '2px 6px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <Bot size={10} /> AI Agent Active
+                    </span>
+                  )}
+                </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--text-muted)' }}>
                   <span>{activeConv.familyPhone}</span>
                   <span>•</span>
@@ -341,12 +358,13 @@ export const ConversationsView: React.FC = () => {
           <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--bg-app)' }}>
             <div style={{ textAlign: 'center', margin: '8px 0' }}>
               <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 10px', borderRadius: '999px', backgroundColor: 'var(--bg-subtle)', color: 'var(--text-muted)' }}>
-                Unified Chronological History • {activeConv.preferredChannel} Connected
+                Unified Chronological History • {activeConv.preferredChannel} Cloud API Active
               </span>
             </div>
 
             {activeMessages.map(msg => {
               const isStaff = msg.senderRole === 'staff';
+              const isAi = msg.senderRole === 'ai';
               const isInternalNote = msg.channel === 'Internal Note';
 
               return (
@@ -355,7 +373,7 @@ export const ConversationsView: React.FC = () => {
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: isInternalNote ? 'center' : isStaff ? 'flex-end' : 'flex-start',
+                    alignItems: isInternalNote ? 'center' : (isStaff || isAi) ? 'flex-end' : 'flex-start',
                     width: '100%'
                   }}
                 >
@@ -385,19 +403,24 @@ export const ConversationsView: React.FC = () => {
                       <div style={{ color: '#78350f', fontWeight: 500 }}>{msg.content}</div>
                     </div>
                   ) : (
-                    /* Standard Message Bubble */
+                    /* Standard / AI Message Bubble */
                     <div
                       style={{
                         maxWidth: '75%',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '4px',
-                        alignItems: isStaff ? 'flex-end' : 'flex-start'
+                        alignItems: (isStaff || isAi) ? 'flex-end' : 'flex-start'
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--text-muted)' }}>
-                        {getChannelIcon(msg.channel)}
+                        {isAi ? <Bot size={14} style={{ color: '#059669' }} /> : getChannelIcon(msg.channel)}
                         <span style={{ fontWeight: 600 }}>{msg.senderName}</span>
+                        {isAi && (
+                          <span style={{ fontSize: '10px', backgroundColor: '#ecfdf5', color: '#059669', padding: '1px 6px', borderRadius: '999px', fontWeight: 700 }}>
+                            🤖 AI Assistant
+                          </span>
+                        )}
                         <span>•</span>
                         <span>{msg.timestamp}</span>
                       </div>
@@ -405,11 +428,11 @@ export const ConversationsView: React.FC = () => {
                       <div
                         style={{
                           padding: '12px 16px',
-                          borderRadius: isStaff ? '14px 14px 2px 14px' : '14px 14px 14px 2px',
-                          backgroundColor: isStaff ? 'var(--primary-accent)' : 'var(--bg-surface)',
-                          color: isStaff ? '#ffffff' : 'var(--text-main)',
+                          borderRadius: (isStaff || isAi) ? '14px 14px 2px 14px' : '14px 14px 14px 2px',
+                          backgroundColor: isAi ? '#065f46' : isStaff ? 'var(--primary-accent)' : 'var(--bg-surface)',
+                          color: (isStaff || isAi) ? '#ffffff' : 'var(--text-main)',
                           boxShadow: 'var(--shadow-xs)',
-                          border: isStaff ? 'none' : '1px solid var(--border-color)',
+                          border: (isStaff || isAi) ? 'none' : '1px solid var(--border-color)',
                           fontSize: '13px',
                           lineHeight: 1.5
                         }}
@@ -428,8 +451,8 @@ export const ConversationsView: React.FC = () => {
                                   gap: '8px',
                                   padding: '8px 12px',
                                   borderRadius: 'var(--radius-sm)',
-                                  backgroundColor: isStaff ? 'rgba(255,255,255,0.15)' : 'var(--bg-subtle)',
-                                  color: isStaff ? '#ffffff' : 'var(--text-main)',
+                                  backgroundColor: 'rgba(255,255,255,0.15)',
+                                  color: '#ffffff',
                                   fontSize: '12px',
                                   fontWeight: 600
                                 }}
@@ -442,7 +465,7 @@ export const ConversationsView: React.FC = () => {
                         )}
                       </div>
 
-                      {isStaff && (
+                      {(isStaff || isAi) && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: 'var(--text-subtle)' }}>
                           <CheckCheck size={12} style={{ color: '#10b981' }} /> Delivered & Read
                         </div>
@@ -456,8 +479,8 @@ export const ConversationsView: React.FC = () => {
 
           {/* Message Composer */}
           <form onSubmit={handleSendMessage} style={{ padding: '16px 20px', borderTop: '1px solid var(--border-color)', backgroundColor: 'var(--bg-surface)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {/* Toolbar: Channel selector + Templates */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {/* Toolbar: Channel selector + AI Generator + Templates */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Send Via:</span>
                 <select
@@ -473,14 +496,22 @@ export const ConversationsView: React.FC = () => {
                 </select>
               </div>
 
-              {/* Quick Response Templates */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Sparkles size={14} style={{ color: 'var(--primary-accent)' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  style={{ color: '#059669', borderColor: '#a7f3d0', fontSize: '11px', gap: '4px' }}
+                  onClick={() => generateAiReplyForThread(activeConv.id)}
+                  title="Generate Empathetic AI Draft Reply"
+                >
+                  <Bot size={14} /> Generate AI Response
+                </button>
+
                 <select
                   className="input-field"
                   onChange={(e) => e.target.value && handleApplyTemplate(e.target.value)}
                   defaultValue=""
-                  style={{ width: '210px', fontSize: '12px' }}
+                  style={{ width: '190px', fontSize: '12px' }}
                 >
                   <option value="" disabled>-- Quick Reply Template --</option>
                   <option value="Dear family, we have received your request and updated the funeral arrangement schedule accordingly. Please let us know if you need anything else.">
@@ -590,8 +621,8 @@ export const ConversationsView: React.FC = () => {
               <strong>{activeMessages.length}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Last Response:</span>
-              <span>{activeConv.lastMessageTime}</span>
+              <span style={{ color: 'var(--text-muted)' }}>AI Auto-Responder:</span>
+              <strong style={{ color: '#059669' }}>Enabled</strong>
             </div>
           </div>
 
@@ -617,6 +648,11 @@ export const ConversationsView: React.FC = () => {
           </div>
         </div>
       ) : null}
+
+      <WhatsAppSimulator
+        isOpen={isSimulatorOpen}
+        onClose={() => setIsSimulatorOpen(false)}
+      />
     </div>
   );
 };

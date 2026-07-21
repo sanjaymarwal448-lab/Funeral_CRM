@@ -18,8 +18,10 @@ import {
   ChatMessage,
   CommunicationChannel,
   ConversationStatus,
-  ChatAttachment
+  ChatAttachment,
+  WhatsAppSettings
 } from '../types/crm';
+import { generateAiFuneralResponse } from '../services/whatsappService';
 
 interface ConfirmDialogState {
   isOpen: boolean;
@@ -63,6 +65,12 @@ interface CRMContextType {
   markNotificationRead: (id: string) => void;
   markAllNotificationsRead: () => void;
   clearNotifications: () => void;
+
+  // WHATSAPP SETTINGS & AI ASSISTANT
+  whatsAppSettings: WhatsAppSettings;
+  updateWhatsAppSettings: (settings: Partial<WhatsAppSettings>) => void;
+  receiveWhatsAppMessage: (familyPhone: string, content: string) => void;
+  generateAiReplyForThread: (conversationId: string) => void;
 
   // CONVERSATIONS & INBOX CRUD
   conversations: Conversation[];
@@ -154,6 +162,17 @@ interface CRMContextType {
 
 const CRMContext = createContext<CRMContextType | undefined>(undefined);
 
+const INITIAL_WHATSAPP_SETTINGS: WhatsAppSettings = {
+  metaAppId: '10948291048291',
+  phoneNumberId: '1058291048102',
+  accessToken: 'EAAG9281...FULL_META_ACCESS_TOKEN',
+  webhookSecret: 'elysium_wh_sec_9948120',
+  isAutoResponderEnabled: true,
+  aiModel: 'GPT-4o Funeral Care',
+  aiTone: 'Empathetic & Dignified',
+  autoCreateDraftCases: true
+};
+
 // INITIAL MOCK CONVERSATIONS & CHAT MESSAGES
 const INITIAL_CONVERSATIONS: Conversation[] = [
   {
@@ -172,7 +191,8 @@ const INITIAL_CONVERSATIONS: Conversation[] = [
     unreadCount: 1,
     lastMessage: 'We have approved the obituary text for the Seattle Times. Please proceed with publication.',
     lastMessageTime: '10:42 AM',
-    preferredChannel: 'WhatsApp'
+    preferredChannel: 'WhatsApp',
+    isAiEnabled: true
   },
   {
     id: 'conv-102',
@@ -190,7 +210,8 @@ const INITIAL_CONVERSATIONS: Conversation[] = [
     unreadCount: 0,
     lastMessage: 'Thank you Director Rostova. The cremation authorization form has been signed digitally.',
     lastMessageTime: 'Yesterday',
-    preferredChannel: 'Email'
+    preferredChannel: 'Email',
+    isAiEnabled: true
   },
   {
     id: 'conv-103',
@@ -208,12 +229,12 @@ const INITIAL_CONVERSATIONS: Conversation[] = [
     unreadCount: 2,
     lastMessage: 'Could we schedule the outdoor pavilion setup at 10 AM instead of 11 AM?',
     lastMessageTime: '09:15 AM',
-    preferredChannel: 'SMS'
+    preferredChannel: 'SMS',
+    isAiEnabled: true
   }
 ];
 
 const INITIAL_CHAT_MESSAGES: ChatMessage[] = [
-  // Conversation 101 - Sterling Family
   {
     id: 'msg-1',
     conversationId: 'conv-101',
@@ -252,49 +273,6 @@ const INITIAL_CHAT_MESSAGES: ChatMessage[] = [
     timestamp: 'Today 10:42 AM',
     read: false,
     deliveryStatus: 'delivered'
-  },
-
-  // Conversation 102 - Harrison Family
-  {
-    id: 'msg-4',
-    conversationId: 'conv-102',
-    senderName: 'Elena Rostova',
-    senderRole: 'staff',
-    avatar: 'ER',
-    channel: 'Email',
-    content: 'Dear Mrs. Harrison, please find attached the Direct Cremation authorization agreement for digital signature.',
-    attachments: [
-      { name: 'Cremation_Authorization_Form.pdf', url: '#', size: '980 KB', type: 'pdf' }
-    ],
-    timestamp: 'Yesterday 01:20 PM',
-    read: true,
-    deliveryStatus: 'read'
-  },
-  {
-    id: 'msg-5',
-    conversationId: 'conv-102',
-    senderName: 'Margaret Harrison',
-    senderRole: 'family',
-    avatar: 'MH',
-    channel: 'Email',
-    content: 'Thank you Director Rostova. The cremation authorization form has been signed digitally.',
-    timestamp: 'Yesterday 03:40 PM',
-    read: true,
-    deliveryStatus: 'read'
-  },
-
-  // Conversation 103 - Montgomery Family
-  {
-    id: 'msg-6',
-    conversationId: 'conv-103',
-    senderName: 'Clara Montgomery',
-    senderRole: 'family',
-    avatar: 'CM',
-    channel: 'SMS',
-    content: 'Could we schedule the outdoor pavilion setup at 10 AM instead of 11 AM?',
-    timestamp: 'Today 09:15 AM',
-    read: false,
-    deliveryStatus: 'delivered'
   }
 ];
 
@@ -323,119 +301,13 @@ const INITIAL_CASES: Case[] = [
     notesCount: 2,
     docsCount: 3,
     createdAt: '2026-07-18'
-  },
-  {
-    id: 'case-102',
-    caseNumber: 'FHC-2026-0842',
-    deceasedName: 'Robert James Harrison',
-    dateOfBirth: '1955-11-20',
-    dateOfDeath: '2026-07-19',
-    placeOfDeath: 'Private Residence, Bellevue',
-    primaryContactId: 'fam-2',
-    primaryContactName: 'Margaret Harrison',
-    relationship: 'Spouse',
-    phone: '(425) 555-0144',
-    email: 'm.harrison@example.com',
-    serviceType: 'Direct Cremation',
-    funeralDate: '2026-07-24',
-    funeralTime: '02:00 PM',
-    location: 'Elysium Crematory Suite',
-    assignedStaffId: 'staff-2',
-    assignedStaffName: 'Elena Rostova',
-    status: 'Active',
-    estimatedCost: 3200,
-    paidAmount: 3200,
-    notesCount: 1,
-    docsCount: 1,
-    createdAt: '2026-07-19'
-  },
-  {
-    id: 'case-103',
-    caseNumber: 'FHC-2026-0843',
-    deceasedName: 'Harold Montgomery',
-    dateOfBirth: '1938-06-05',
-    dateOfDeath: '2026-07-20',
-    placeOfDeath: 'Evergreen Hospice Center',
-    primaryContactId: 'fam-3',
-    primaryContactName: 'Clara Montgomery',
-    relationship: 'Daughter',
-    phone: '(206) 555-0873',
-    email: 'clara.m@example.com',
-    serviceType: 'Celebration of Life',
-    funeralDate: '2026-07-26',
-    funeralTime: '11:00 AM',
-    location: 'Oceanview Garden Pavilion',
-    assignedStaffId: 'staff-1',
-    assignedStaffName: 'Marcus Vance',
-    status: 'In Transit',
-    estimatedCost: 6100,
-    paidAmount: 2000,
-    notesCount: 0,
-    docsCount: 0,
-    createdAt: '2026-07-20'
   }
 ];
 
-const INITIAL_TIMELINE: CaseTimelineEvent[] = [
-  {
-    id: 'tl-1',
-    caseId: 'case-101',
-    title: 'First Call & Case Initiated',
-    description: 'Received initial call from St. Jude Memorial Hospital. Transfer authorized by Arthur Sterling.',
-    timestamp: '2026-07-18 08:30 AM',
-    author: 'Marcus Vance',
-    type: 'case_created'
-  },
-  {
-    id: 'tl-2',
-    caseId: 'case-101',
-    title: 'Death Certificate Issued',
-    description: 'Official death certificate filed with King County Registrar.',
-    timestamp: '2026-07-19 02:15 PM',
-    author: 'Elena Rostova',
-    type: 'document_uploaded'
-  }
-];
-
-const INITIAL_TASKS: CaseTask[] = [
-  {
-    id: 'task-1',
-    caseId: 'case-101',
-    caseName: 'Eleanor Vance Sterling',
-    title: 'Verify Permit for Burial at Pinegrove Park',
-    assignedStaffName: 'Elena Rostova',
-    dueDate: '2026-07-22',
-    dueTime: '11:00 AM',
-    priority: 'High',
-    status: 'In Progress'
-  }
-];
-
-const INITIAL_DOCS: CaseDocument[] = [
-  {
-    id: 'doc-1',
-    caseId: 'case-101',
-    caseName: 'Eleanor Vance Sterling',
-    name: 'Death_Certificate_Sterling_Official.pdf',
-    category: 'Death Certificates',
-    size: '1.4 MB',
-    uploadDate: '2026-07-19',
-    fileType: 'pdf'
-  }
-];
-
-const INITIAL_NOTES: CaseNote[] = [
-  {
-    id: 'note-1',
-    caseId: 'case-101',
-    author: 'Marcus Vance',
-    avatar: 'MV',
-    date: '2026-07-20',
-    time: '11:30 AM',
-    text: 'Family requested specific hymn selections: "Amazing Grace" and "Abide With Me". Organist confirmed.'
-  }
-];
-
+const INITIAL_TIMELINE: CaseTimelineEvent[] = [];
+const INITIAL_TASKS: CaseTask[] = [];
+const INITIAL_DOCS: CaseDocument[] = [];
+const INITIAL_NOTES: CaseNote[] = [];
 const INITIAL_FAMILIES: Family[] = [
   {
     id: 'fam-1',
@@ -449,99 +321,13 @@ const INITIAL_FAMILIES: Family[] = [
     ],
     lastActivity: '2026-07-20 (Invoice Paid)',
     notes: 'Prefers communication via phone calls before 5 PM.'
-  },
-  {
-    id: 'fam-2',
-    name: 'Harrison Family',
-    relationship: 'Spouse',
-    phone: '(425) 555-0144',
-    email: 'm.harrison@example.com',
-    address: '8820 NE 10th St, Bellevue, WA 98004',
-    linkedCases: [
-      { caseId: 'case-102', deceasedName: 'Robert James Harrison', caseNumber: 'FHC-2026-0842' }
-    ],
-    lastActivity: '2026-07-19 (Contract Signed)',
-    notes: 'Requested urn delivery directly to private residence.'
-  },
-  {
-    id: 'fam-3',
-    name: 'Montgomery Family',
-    relationship: 'Daughter',
-    phone: '(206) 555-0873',
-    email: 'clara.m@example.com',
-    address: '3412 Alki Ave SW, Seattle, WA 98116',
-    linkedCases: [
-      { caseId: 'case-103', deceasedName: 'Harold Montgomery', caseNumber: 'FHC-2026-0843' }
-    ],
-    lastActivity: '2026-07-20 (Meeting Scheduled)',
-    notes: 'Planning outdoor memorial celebration.'
   }
 ];
 
-const INITIAL_CALENDAR: CalendarEvent[] = [
-  {
-    id: 'cal-1',
-    title: 'Funeral Service: Eleanor Vance Sterling',
-    caseId: 'case-101',
-    caseNumber: 'FHC-2026-0841',
-    deceasedName: 'Eleanor Vance Sterling',
-    startDate: '2026-07-23',
-    startTime: '10:30 AM',
-    endTime: '12:00 PM',
-    type: 'Funeral',
-    location: 'Main Chapel - Grace Memorial',
-    staffName: 'Marcus Vance'
-  }
-];
-
-const INITIAL_INVOICES: Invoice[] = [
-  {
-    id: 'inv-1',
-    invoiceNumber: 'INV-2026-091',
-    familyId: 'fam-1',
-    familyName: 'Arthur Sterling',
-    caseId: 'case-101',
-    caseNumber: 'FHC-2026-0841',
-    deceasedName: 'Eleanor Vance Sterling',
-    items: [
-      { id: 'i1', description: 'Professional Director Services', quantity: 1, unitPrice: 3200, total: 3200 }
-    ],
-    totalAmount: 8440,
-    paidAmount: 5000,
-    dueDate: '2026-07-30',
-    issueDate: '2026-07-20',
-    status: 'Pending'
-  }
-];
-
-const INITIAL_VEHICLES: Vehicle[] = [
-  {
-    id: 'veh-1',
-    name: 'Cadillac XTS Eagle Hearse',
-    registrationNumber: 'WA-772-FHC',
-    type: 'Hearse',
-    photo: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80',
-    driverName: 'Thomas Wright',
-    status: 'Available',
-    nextMaintenanceDate: '2026-08-15',
-    mileage: '24,150 miles'
-  }
-];
-
-const INITIAL_INVENTORY: InventoryItem[] = [
-  {
-    id: 'inv-item-1',
-    name: 'Heritage Solid Mahogany Casket',
-    category: 'Caskets',
-    stock: 4,
-    lowStockAlert: 2,
-    purchasePrice: 1850,
-    sellingPrice: 3850,
-    supplier: 'Batesville Casket Co.',
-    location: 'Showroom Bay 1'
-  }
-];
-
+const INITIAL_CALENDAR: CalendarEvent[] = [];
+const INITIAL_INVOICES: Invoice[] = [];
+const INITIAL_VEHICLES: Vehicle[] = [];
+const INITIAL_INVENTORY: InventoryItem[] = [];
 const INITIAL_STAFF: StaffMember[] = [
   {
     id: 'staff-1',
@@ -553,32 +339,10 @@ const INITIAL_STAFF: StaffMember[] = [
     status: 'Active',
     photo: 'MV',
     activeCasesCount: 2
-  },
-  {
-    id: 'staff-2',
-    name: 'Elena Rostova',
-    position: 'Operations Manager & Embalmer',
-    role: 'Manager',
-    email: 'e.rostova@elysiumfuneral.com',
-    phone: '(206) 555-0102',
-    status: 'Active',
-    photo: 'ER',
-    activeCasesCount: 1
   }
 ];
 
-const INITIAL_NOTIFICATIONS: AppNotification[] = [
-  {
-    id: 'notif-1',
-    title: 'New WhatsApp Message Received',
-    message: 'Arthur Sterling approved obituary copy for Eleanor Sterling case',
-    timestamp: '10 minutes ago',
-    read: false,
-    type: 'info',
-    linkModule: 'Conversations',
-    linkId: 'conv-101'
-  }
-];
+const INITIAL_NOTIFICATIONS: AppNotification[] = [];
 
 const INITIAL_SETTINGS: CompanySettings = {
   companyName: 'Elysium Funeral Directors & Mortuary',
@@ -609,6 +373,9 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Notifications State
   const [notifications, setNotifications] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS);
+
+  // WhatsApp & AI Assistant State
+  const [whatsAppSettings, setWhatsAppSettings] = useState<WhatsAppSettings>(INITIAL_WHATSAPP_SETTINGS);
 
   // Conversations & Messages State
   const [conversations, setConversations] = useState<Conversation[]>(INITIAL_CONVERSATIONS);
@@ -676,7 +443,152 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setNotifications([]);
   };
 
-  // CONVERSATIONS & CHAT ACTIONS
+  const updateWhatsAppSettings = (newSettings: Partial<WhatsAppSettings>) => {
+    setWhatsAppSettings(prev => ({ ...prev, ...newSettings }));
+    addToast('WhatsApp Business Cloud API settings saved!');
+  };
+
+  // SIMULATE INCOMING WHATSAPP MESSAGE & AI RESPONSE
+  const receiveWhatsAppMessage = (familyPhone: string, content: string) => {
+    // 1. Find or create conversation for this phone number
+    let targetConv = conversations.find(c => c.familyPhone.replace(/\D/g, '') === familyPhone.replace(/\D/g, ''));
+    
+    if (!targetConv) {
+      const newConvId = `conv-${Date.now()}`;
+      targetConv = {
+        id: newConvId,
+        familyId: `fam-${Date.now()}`,
+        familyName: `WhatsApp Contact (${familyPhone})`,
+        familyPhone,
+        familyEmail: 'contact@whatsapp.family',
+        assignedStaffName: 'Marcus Vance',
+        status: 'Open',
+        isPinned: false,
+        unreadCount: 1,
+        lastMessage: content,
+        lastMessageTime: 'Just now',
+        preferredChannel: 'WhatsApp',
+        isAiEnabled: true
+      };
+      setConversations(prev => [targetConv!, ...prev]);
+    } else {
+      setConversations(prev => prev.map(c => c.id === targetConv!.id ? { ...c, lastMessage: content, lastMessageTime: 'Just now', unreadCount: c.unreadCount + 1 } : c));
+    }
+
+    // 2. Add incoming message
+    const familyMsg: ChatMessage = {
+      id: `msg-${Date.now()}`,
+      conversationId: targetConv.id,
+      senderName: targetConv.familyName.split('(')[0]?.trim() || 'Family Contact',
+      senderRole: 'family',
+      avatar: 'WA',
+      channel: 'WhatsApp',
+      content,
+      timestamp: 'Just now',
+      read: false,
+      deliveryStatus: 'delivered'
+    };
+
+    setChatMessages(prev => [...prev, familyMsg]);
+    addToast(`Incoming WhatsApp message from ${familyPhone}`);
+    addNotification('WhatsApp Message Received', `${content.slice(0, 50)}...`, 'info', 'Conversations', targetConv.id);
+
+    // 3. AI Assistant Reasoning & Auto-Responder
+    if (whatsAppSettings.isAutoResponderEnabled && targetConv.isAiEnabled !== false) {
+      setTimeout(() => {
+        const aiResponse = generateAiFuneralResponse(content, targetConv!, whatsAppSettings);
+
+        const aiMsg: ChatMessage = {
+          id: `msg-ai-${Date.now()}`,
+          conversationId: targetConv!.id,
+          senderName: `Elysium AI Care Assistant (${whatsAppSettings.aiModel})`,
+          senderRole: 'ai',
+          avatar: '🤖',
+          channel: 'WhatsApp',
+          content: aiResponse.messageText,
+          timestamp: 'Just now',
+          read: true,
+          deliveryStatus: 'sent',
+          aiAssisted: true
+        };
+
+        setChatMessages(prev => [...prev, aiMsg]);
+        setConversations(prev => prev.map(c => c.id === targetConv!.id ? { ...c, lastMessage: aiResponse.messageText, lastMessageTime: 'Just now' } : c));
+        addToast(`AI Funeral Care Assistant responded on WhatsApp`);
+
+        // If First Call data was extracted, auto-create draft case file in CRM
+        if (aiResponse.extractedCaseData && whatsAppSettings.autoCreateDraftCases) {
+          const newCaseNum = `FHC-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+          const newCase: Case = {
+            id: `case-${Date.now()}`,
+            caseNumber: newCaseNum,
+            deceasedName: aiResponse.extractedCaseData.deceasedName,
+            dateOfBirth: '1950-01-01',
+            dateOfDeath: new Date().toISOString().split('T')[0],
+            placeOfDeath: aiResponse.extractedCaseData.placeOfDeath,
+            primaryContactId: targetConv!.familyId,
+            primaryContactName: aiResponse.extractedCaseData.contactName,
+            relationship: aiResponse.extractedCaseData.relationship,
+            phone: familyPhone,
+            email: targetConv!.familyEmail,
+            serviceType: aiResponse.extractedCaseData.suggestedServiceType,
+            funeralDate: '2026-07-28',
+            funeralTime: '10:00 AM',
+            location: 'Main Chapel - Grace Memorial',
+            assignedStaffId: 'staff-1',
+            assignedStaffName: 'Marcus Vance',
+            status: 'Draft',
+            estimatedCost: 6500,
+            paidAmount: 0,
+            notesCount: 1,
+            docsCount: 0,
+            createdAt: new Date().toISOString().split('T')[0]
+          };
+
+          setCases(prev => [newCase, ...prev]);
+          setConversations(prev => prev.map(c => c.id === targetConv!.id ? { ...c, caseId: newCase.id, caseNumber: newCaseNum, deceasedName: newCase.deceasedName } : c));
+          addToast(`🤖 AI Auto-Intake: Created Draft Funeral Case #${newCaseNum}!`, 'success');
+          addNotification('AI Case Auto-Intake', `Draft case #${newCaseNum} created for ${newCase.deceasedName} from WhatsApp intake`, 'success', 'Cases', newCase.id);
+        }
+
+        // If human handover requested
+        if (aiResponse.requiresHumanHandover) {
+          updateConversationStatus(targetConv!.id, 'Waiting for Staff');
+          addToast(`🔔 Handover Request: Conversation assigned to Marcus Vance`, 'warning');
+          addNotification('Human Director Needed', `Family requested human director in WhatsApp chat`, 'warning', 'Conversations', targetConv!.id);
+        }
+      }, 1000);
+    }
+  };
+
+  const generateAiReplyForThread = (conversationId: string) => {
+    const targetConv = conversations.find(c => c.id === conversationId);
+    if (!targetConv) return;
+    const threadMsgs = chatMessages.filter(m => m.conversationId === conversationId);
+    const lastUserMsg = [...threadMsgs].reverse().find(m => m.senderRole === 'family')?.content || 'Can you help us with arrangements?';
+
+    const aiResponse = generateAiFuneralResponse(lastUserMsg, targetConv, whatsAppSettings);
+
+    const aiMsg: ChatMessage = {
+      id: `msg-ai-${Date.now()}`,
+      conversationId,
+      senderName: `Elysium AI Care Assistant (${whatsAppSettings.aiModel})`,
+      senderRole: 'ai',
+      avatar: '🤖',
+      channel: targetConv.preferredChannel,
+      content: aiResponse.messageText,
+      timestamp: 'Just now',
+      read: true,
+      deliveryStatus: 'sent',
+      aiAssisted: true
+    };
+
+    setChatMessages(prev => [...prev, aiMsg]);
+    setConversations(prev => prev.map(c => c.id === conversationId ? { ...c, lastMessage: aiResponse.messageText, lastMessageTime: 'Just now' } : c));
+    addToast('AI Draft Response Generated & Sent!');
+  };
+
+  // CONVERSATIONS CRUD
   const sendChatMessage = (conversationId: string, content: string, channel: CommunicationChannel, attachments?: ChatAttachment[]) => {
     const newMsg: ChatMessage = {
       id: `msg-${Date.now()}`,
@@ -694,7 +606,6 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     setChatMessages(prev => [...prev, newMsg]);
 
-    // Update parent Conversation snippet and timestamp
     setConversations(prev => prev.map(c => {
       if (c.id === conversationId) {
         return {
@@ -707,7 +618,6 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return c;
     }));
 
-    // Auto-log to linked Case Timeline if conversation belongs to a case
     const targetConv = conversations.find(c => c.id === conversationId);
     if (targetConv && targetConv.caseId) {
       const tlEvent: CaseTimelineEvent = {
@@ -776,23 +686,6 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       type: 'case_created'
     };
     setTimelineEvents(prev => [tlEvent, ...prev]);
-
-    if (newCase.funeralDate) {
-      const calEvt: CalendarEvent = {
-        id: `cal-${Date.now()}`,
-        title: `${newCase.serviceType}: ${newCase.deceasedName}`,
-        caseId: id,
-        caseNumber,
-        deceasedName: newCase.deceasedName,
-        startDate: newCase.funeralDate,
-        startTime: newCase.funeralTime || '10:00 AM',
-        endTime: '12:00 PM',
-        type: newCase.serviceType.includes('Cremation') ? 'Cremation' : 'Funeral',
-        location: newCase.location,
-        staffName: newCase.assignedStaffName
-      };
-      setCalendarEvents(prev => [...prev, calEvt]);
-    }
 
     addToast(`Case #${caseNumber} for ${newCase.deceasedName} created successfully!`);
     addNotification('New Funeral Case Initiated', `Case #${caseNumber} created for ${newCase.deceasedName}`, 'success', 'Cases', id);
@@ -905,7 +798,6 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setCases(prev => prev.map(c => c.id === docData.caseId ? { ...c, docsCount: c.docsCount + 1 } : c));
     }
     addToast(`Document "${docData.name}" uploaded successfully!`);
-    addNotification('Document Uploaded', `${docData.name} added to vault`, 'info', 'Documents', newDoc.id);
   };
 
   const renameDocument = (id: string, newName: string) => {
@@ -999,7 +891,6 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
     setInvoices(prev => [newInv, ...prev]);
     addToast(`Invoice #${newInv.invoiceNumber} created for ${newInv.familyName}!`);
-    addNotification('New Invoice Issued', `Invoice #${newInv.invoiceNumber} issued for $${newInv.totalAmount.toLocaleString()}`, 'info', 'Invoices', newInv.id);
   };
 
   const updateInvoice = (id: string, updatedData: Partial<Invoice>) => {
@@ -1016,9 +907,6 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return i;
     }));
     addToast(`Invoice marked as ${status}.`);
-    if (status === 'Paid') {
-      addNotification('Invoice Paid', `Payment settled for invoice`, 'success', 'Invoices', id);
-    }
   };
 
   const deleteInvoice = (id: string) => {
@@ -1067,9 +955,6 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setInventory(prev => prev.map(inv => {
       if (inv.id === id) {
         const nextStock = Math.max(0, inv.stock + delta);
-        if (nextStock <= inv.lowStockAlert) {
-          addNotification('Low Stock Alert', `${inv.name} stock level is low (${nextStock} left)`, 'warning', 'Inventory', id);
-        }
         return { ...inv, stock: nextStock };
       }
       return inv;
@@ -1149,6 +1034,10 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         markNotificationRead,
         markAllNotificationsRead,
         clearNotifications,
+        whatsAppSettings,
+        updateWhatsAppSettings,
+        receiveWhatsAppMessage,
+        generateAiReplyForThread,
         conversations,
         chatMessages,
         activeConversationId,
