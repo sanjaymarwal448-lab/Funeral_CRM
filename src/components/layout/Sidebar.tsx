@@ -45,16 +45,25 @@ export const Sidebar: React.FC = () => {
 
   const sidebarWidth = isSidebarCollapsed ? 'var(--sidebar-collapsed-width)' : 'var(--sidebar-width)';
 
-  // Elegant branching leaf logo SVG matching the luxury logo in the mockup
+  // High-fidelity recreation of the attached branching leaf emblem logo
   const BrandLogo = () => (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: 'var(--golden-emblem)' }}>
-      <path d="M12 2C12 2 12 22 12 22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-      <path d="M12 6C14.5 5 16.5 3 16.5 3C16.5 3 14 6 12 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M12 10C14.5 9 16.5 7 16.5 7C16.5 7 14 10 12 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M12 14C14.5 13 16.5 11 16.5 11C16.5 11 14 14 12 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M12 6C9.5 5 7.5 3 7.5 3C7.5 3 10 6 12 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M12 10C9.5 9 7.5 7 7.5 7C7.5 7 10 10 12 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M12 14C9.5 13 7.5 11 7.5 11C7.5 11 10 14 12 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <svg viewBox="0 0 100 100" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: '#9CA88E' }}>
+      {/* Stem */}
+      <path d="M50 90C50 90 50 42 50 15" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+      {/* Top center leaf */}
+      <path d="M50 35C47 25 50 15 50 15C50 15 53 25 50 35Z" fill="currentColor"/>
+      {/* Upper pair of leaves */}
+      <path d="M50 48C39 39 39 30 43 27C47 24 49 33 50 40Z" fill="currentColor"/>
+      <path d="M50 48C61 39 61 30 57 27C53 24 51 33 50 40Z" fill="currentColor"/>
+      {/* Middle pair of leaves */}
+      <path d="M50 62C32 54 28 45 34 41C40 37 46 48 50 55Z" fill="currentColor"/>
+      <path d="M50 62C68 54 72 45 66 41C60 37 54 48 50 55Z" fill="currentColor"/>
+      {/* Lower pair of leaves */}
+      <path d="M50 72C36 68 34 61 38 57C42 53 47 62 50 67Z" fill="currentColor"/>
+      <path d="M50 72C64 68 66 61 62 57C58 53 53 62 50 67Z" fill="currentColor"/>
+      {/* Small lowest pair of leaves */}
+      <path d="M50 80C43 80 40 75 43 73C46 71 48 76 50 78Z" fill="currentColor"/>
+      <path d="M50 80C57 80 60 75 57 73C54 71 52 76 50 78Z" fill="currentColor"/>
     </svg>
   );
 
@@ -73,39 +82,40 @@ export const Sidebar: React.FC = () => {
         flexShrink: 0
       }}
     >
-      {/* Brand Header (Dark luxury slate) */}
+      {/* Brand Header (Dark luxury slate - enlarged to 88px) */}
       <div
         style={{
-          height: 'var(--header-height)',
+          height: '88px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: isSidebarCollapsed ? 'center' : 'space-between',
           padding: isSidebarCollapsed ? '0 12px' : '0 20px',
           backgroundColor: 'var(--bg-sidebar-header)',
-          color: '#ffffff'
+          color: '#ffffff',
+          boxSizing: 'border-box'
         }}
       >
         {!isSidebarCollapsed ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div
               style={{
-                width: '32px',
-                height: '32px',
+                width: '36px',
+                height: '36px',
                 borderRadius: '8px',
-                border: '1.5px solid var(--golden-emblem)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: 'rgba(197, 179, 130, 0.08)'
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)'
               }}
             >
               <BrandLogo />
             </div>
             <div>
-              <div className="brand-title" style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '0.04em', color: '#ffffff', lineHeight: 1.1 }}>
+              <div className="brand-title" style={{ fontSize: '15px', fontWeight: '700', letterSpacing: '0.04em', color: '#ffffff', lineHeight: 1.1 }}>
                 Evergreen
               </div>
-              <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '600', marginTop: '1px' }}>
+              <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '600', marginTop: '2px' }}>
                 Funeral Homes
               </div>
             </div>
@@ -113,39 +123,40 @@ export const Sidebar: React.FC = () => {
         ) : (
           <div
             style={{
-              width: '36px',
-              height: '36px',
+              width: '38px',
+              height: '38px',
               borderRadius: '8px',
-              border: '1.5px solid var(--golden-emblem)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: 'rgba(197, 179, 130, 0.08)'
+              backgroundColor: 'rgba(255, 255, 255, 0.05)'
             }}
           >
             <BrandLogo />
           </div>
         )}
 
-        <button
-          onClick={() => setIsSidebarCollapsed((prev) => !prev)}
-          style={{
-            background: 'rgba(255, 255, 255, 0.08)',
-            border: 'none',
-            color: '#ffffff',
-            width: '24px',
-            height: '24px',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 0.15s'
-          }}
-          title={isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-        >
-          {isSidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-        </button>
+        {!isSidebarCollapsed && (
+          <button
+            onClick={() => setIsSidebarCollapsed(true)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: 'none',
+              color: '#ffffff',
+              width: '24px',
+              height: '24px',
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.15s'
+            }}
+            title="Collapse Sidebar"
+          >
+            <ChevronLeft size={14} />
+          </button>
+        )}
       </div>
 
       {/* Main Body Wrapper (Pure white, with curvy top transition) */}
@@ -161,7 +172,7 @@ export const Sidebar: React.FC = () => {
         }}
       >
         {/* Navigation List */}
-        <div style={{ flex: 1, padding: '20px 12px 16px', overflowY: 'auto' }}>
+        <div style={{ flex: 1, padding: '24px 12px 16px', overflowY: 'auto' }}>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {navItems.map((item) => {
               const Icon = item.icon;
