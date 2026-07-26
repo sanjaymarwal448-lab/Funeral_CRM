@@ -49,8 +49,8 @@ export const Sidebar: React.FC = () => {
     <aside
       style={{
         width: sidebarWidth,
-        backgroundColor: 'var(--bg-sidebar-header)',
-        color: '#f8fafc',
+        backgroundColor: 'var(--bg-surface)',
+        borderRight: '1px solid var(--border-color)',
         height: '100vh',
         position: 'sticky',
         top: 0,
@@ -58,11 +58,10 @@ export const Sidebar: React.FC = () => {
         flexDirection: 'column',
         transition: 'width var(--transition-normal)',
         zIndex: 40,
-        boxShadow: 'var(--shadow-md)',
         flexShrink: 0
       }}
     >
-      {/* Brand Header */}
+      {/* Brand Header (Dark luxury slate) */}
       <div
         style={{
           height: 'var(--header-height)',
@@ -70,7 +69,8 @@ export const Sidebar: React.FC = () => {
           alignItems: 'center',
           justifyContent: isSidebarCollapsed ? 'center' : 'space-between',
           padding: isSidebarCollapsed ? '0 12px' : '0 20px',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+          backgroundColor: 'var(--bg-sidebar-header)',
+          color: '#ffffff'
         }}
       >
         {!isSidebarCollapsed ? (
@@ -96,7 +96,7 @@ export const Sidebar: React.FC = () => {
                 EVERGREEN
               </div>
               <div style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '600' }}>
-                Funeral CRM
+                Funeral Homes
               </div>
             </div>
           </div>
@@ -121,9 +121,9 @@ export const Sidebar: React.FC = () => {
         <button
           onClick={() => setIsSidebarCollapsed((prev) => !prev)}
           style={{
-            background: 'rgba(255, 255, 255, 0.06)',
+            background: 'rgba(255, 255, 255, 0.08)',
             border: 'none',
-            color: '#94a3b8',
+            color: '#ffffff',
             width: '26px',
             height: '26px',
             borderRadius: '6px',
@@ -157,9 +157,9 @@ export const Sidebar: React.FC = () => {
                   padding: isSidebarCollapsed ? '10px 0' : '10px 14px',
                   borderRadius: 'var(--radius-md)',
                   border: 'none',
-                  backgroundColor: isActive ? 'var(--primary-accent)' : 'transparent',
-                  color: isActive ? '#ffffff' : '#94a3b8',
-                  fontWeight: isActive ? 600 : 500,
+                  backgroundColor: isActive ? 'var(--bg-active)' : 'transparent',
+                  color: isActive ? 'var(--primary-accent)' : 'var(--text-main)',
+                  fontWeight: isActive ? 700 : 500,
                   fontSize: '13px',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
@@ -169,7 +169,7 @@ export const Sidebar: React.FC = () => {
                 title={isSidebarCollapsed ? item.name : undefined}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Icon size={18} style={{ color: isActive ? '#ffffff' : '#94a3b8', flexShrink: 0 }} />
+                  <Icon size={18} style={{ color: isActive ? 'var(--primary-accent)' : 'var(--text-muted)', flexShrink: 0 }} />
                   {!isSidebarCollapsed && <span>{item.name}</span>}
                 </div>
 
@@ -178,8 +178,8 @@ export const Sidebar: React.FC = () => {
                     style={{
                       fontSize: '11px',
                       fontWeight: 700,
-                      backgroundColor: isActive ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.12)',
-                      color: '#ffffff',
+                      backgroundColor: isActive ? 'var(--primary-accent)' : 'var(--bg-subtle)',
+                      color: isActive ? '#ffffff' : 'var(--text-main)',
                       padding: '2px 7px',
                       borderRadius: '999px'
                     }}
@@ -198,11 +198,11 @@ export const Sidebar: React.FC = () => {
         <div
           style={{
             padding: '16px',
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            borderTop: '1px solid var(--border-color)',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            backgroundColor: 'rgba(0, 0, 0, 0.2)'
+            backgroundColor: 'var(--bg-subtle)'
           }}
         >
           <div
@@ -210,7 +210,7 @@ export const Sidebar: React.FC = () => {
               width: '36px',
               height: '36px',
               borderRadius: '50%',
-              backgroundColor: '#3b82f6',
+              backgroundColor: 'var(--primary-accent)',
               color: '#ffffff',
               display: 'flex',
               alignItems: 'center',
@@ -222,10 +222,10 @@ export const Sidebar: React.FC = () => {
             MA
           </div>
           <div style={{ overflow: 'hidden' }}>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: '#f8fafc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               Michael Anderson
             </div>
-            <div style={{ fontSize: '11px', color: '#94a3b8' }}>Owner</div>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Owner</div>
           </div>
         </div>
       )}

@@ -221,35 +221,35 @@ export const DashboardView: React.FC = () => {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <div style={{ padding: '12px', backgroundColor: '#eafaf1', borderRadius: 'var(--radius-md)', display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <Phone size={16} style={{ color: '#10b981' }} />
+              <div style={{ padding: '12px', backgroundColor: 'var(--status-urgent-bg)', borderRadius: 'var(--radius-md)', display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <Phone size={16} style={{ color: 'var(--status-urgent-text)' }} />
                 <div>
-                  <div style={{ fontSize: '10px', color: '#047857', fontWeight: 600 }}>Calls</div>
-                  <strong style={{ fontSize: '16px', color: '#047857' }}>26</strong>
+                  <div style={{ fontSize: '10px', color: 'var(--status-urgent-text)', fontWeight: 600 }}>Calls</div>
+                  <strong style={{ fontSize: '16px', color: 'var(--status-urgent-text)' }}>26</strong>
                 </div>
               </div>
 
-              <div style={{ padding: '12px', backgroundColor: '#eff6ff', borderRadius: 'var(--radius-md)', display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <MessageSquare size={16} style={{ color: '#2563eb' }} />
+              <div style={{ padding: '12px', backgroundColor: 'var(--status-scheduled-bg)', borderRadius: 'var(--radius-md)', display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <MessageSquare size={16} style={{ color: 'var(--status-scheduled-text)' }} />
                 <div>
-                  <div style={{ fontSize: '10px', color: '#1d4ed8', fontWeight: 600 }}>Texts</div>
-                  <strong style={{ fontSize: '16px', color: '#1d4ed8' }}>14</strong>
+                  <div style={{ fontSize: '10px', color: 'var(--status-scheduled-text)', fontWeight: 600 }}>Texts</div>
+                  <strong style={{ fontSize: '16px', color: 'var(--status-scheduled-text)' }}>14</strong>
                 </div>
               </div>
 
-              <div style={{ padding: '12px', backgroundColor: '#eefcf5', borderRadius: 'var(--radius-md)', display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <MessageSquare size={16} style={{ color: '#10b981' }} />
+              <div style={{ padding: '12px', backgroundColor: 'var(--status-active-bg)', borderRadius: 'var(--radius-md)', display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <MessageSquare size={16} style={{ color: 'var(--status-active-text)' }} />
                 <div>
-                  <div style={{ fontSize: '10px', color: '#047857', fontWeight: 600 }}>WhatsApp</div>
-                  <strong style={{ fontSize: '16px', color: '#047857' }}>8</strong>
+                  <div style={{ fontSize: '10px', color: 'var(--status-active-text)', fontWeight: 600 }}>WhatsApp</div>
+                  <strong style={{ fontSize: '16px', color: 'var(--status-active-text)' }}>8</strong>
                 </div>
               </div>
 
-              <div style={{ padding: '12px', backgroundColor: '#fffbeb', borderRadius: 'var(--radius-md)', display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <Mail size={16} style={{ color: '#d97706' }} />
+              <div style={{ padding: '12px', backgroundColor: 'var(--status-transit-bg)', borderRadius: 'var(--radius-md)', display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <Mail size={16} style={{ color: 'var(--status-transit-text)' }} />
                 <div>
-                  <div style={{ fontSize: '10px', color: '#b45309', fontWeight: 600 }}>Emails</div>
-                  <strong style={{ fontSize: '16px', color: '#b45309' }}>4</strong>
+                  <div style={{ fontSize: '10px', color: 'var(--status-transit-text)', fontWeight: 600 }}>Emails</div>
+                  <strong style={{ fontSize: '16px', color: 'var(--status-transit-text)' }}>4</strong>
                 </div>
               </div>
             </div>
