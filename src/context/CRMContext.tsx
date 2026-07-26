@@ -166,7 +166,7 @@ const INITIAL_WHATSAPP_SETTINGS: WhatsAppSettings = {
   metaAppId: '10948291048291',
   phoneNumberId: '1058291048102',
   accessToken: 'EAAG9281...FULL_META_ACCESS_TOKEN',
-  webhookSecret: 'elysium_wh_sec_9948120',
+  webhookSecret: 'evergreen_wh_sec_9948120',
   isAutoResponderEnabled: true,
   aiModel: 'GPT-4o Funeral Care',
   aiTone: 'Empathetic & Dignified',
@@ -334,7 +334,7 @@ const INITIAL_STAFF: StaffMember[] = [
     name: 'Marcus Vance',
     position: 'Senior Funeral Director',
     role: 'Funeral Director',
-    email: 'm.vance@elysiumfuneral.com',
+    email: 'm.vance@evergreenfuneral.com',
     phone: '(206) 555-0101',
     status: 'Active',
     photo: 'MV',
@@ -345,17 +345,17 @@ const INITIAL_STAFF: StaffMember[] = [
 const INITIAL_NOTIFICATIONS: AppNotification[] = [];
 
 const INITIAL_SETTINGS: CompanySettings = {
-  companyName: 'Elysium Funeral Directors & Mortuary',
+  companyName: 'Evergreen Funeral Directors & Mortuary',
   tagline: 'Dignified & Compassionate Care Since 1994',
-  logoText: 'ELYSIUM',
+  logoText: 'EVERGREEN',
   address: '1200 Grand View Boulevard, Seattle, WA 98101',
   phone: '(206) 555-0100',
-  email: 'care@elysiumfuneral.com',
-  website: 'https://elysiumfuneral.com',
+  email: 'care@evergreenfuneral.com',
+  website: 'https://evergreenfuneral.com',
   taxId: 'TAX-99482-WA',
   currency: 'USD ($)',
   timeZone: 'America/Los_Angeles (PST)',
-  primaryColor: '#2563eb',
+  primaryColor: '#7A9073',
   taxRate: 9.8
 };
 
@@ -501,7 +501,7 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const aiMsg: ChatMessage = {
           id: `msg-ai-${Date.now()}`,
           conversationId: targetConv!.id,
-          senderName: `Elysium AI Care Assistant (${whatsAppSettings.aiModel})`,
+          senderName: `Evergreen AI Care Assistant (${whatsAppSettings.aiModel})`,
           senderRole: 'ai',
           avatar: '🤖',
           channel: 'WhatsApp',
@@ -572,7 +572,7 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const aiMsg: ChatMessage = {
       id: `msg-ai-${Date.now()}`,
       conversationId,
-      senderName: `Elysium AI Care Assistant (${whatsAppSettings.aiModel})`,
+      senderName: `Evergreen AI Care Assistant (${whatsAppSettings.aiModel})`,
       senderRole: 'ai',
       avatar: '🤖',
       channel: targetConv.preferredChannel,

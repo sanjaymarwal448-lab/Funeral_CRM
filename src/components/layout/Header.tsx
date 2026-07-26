@@ -40,7 +40,7 @@ export const Header: React.FC = () => {
             color: 'var(--text-muted)'
           }}
         >
-          Elysium Directors Suite
+          Evergreen Directors Suite
         </span>
       </div>
 

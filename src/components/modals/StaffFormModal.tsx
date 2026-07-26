@@ -129,7 +129,7 @@ export const StaffFormModal: React.FC<Props> = ({ isOpen, onClose, initialData }
               <input
                 type="email"
                 className="input-field"
-                placeholder="m.vance@elysiumfuneral.com"
+                placeholder="m.vance@evergreenfuneral.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />

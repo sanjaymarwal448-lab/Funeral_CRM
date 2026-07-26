@@ -43,7 +43,7 @@ export const DocumentPreviewModal: React.FC<Props> = ({ doc, isOpen, onClose }) 
           <ShieldCheck size={48} style={{ color: 'var(--primary-accent)', marginBottom: '12px' }} />
           <h4 style={{ fontSize: '15px', fontWeight: 700 }}>Document Encrypted & Verified</h4>
           <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px', maxWidth: '360px' }}>
-            This document is stored securely in the Elysium vault. Official record ID: {doc.id}
+            This document is stored securely in the Evergreen vault. Official record ID: {doc.id}
           </p>
         </div>
 

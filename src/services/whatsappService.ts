@@ -59,7 +59,7 @@ export const generateAiFuneralResponse = (
     else if (lowerMsg.includes('hospice')) place = 'Evergreen Hospice Center';
 
     return {
-      messageText: `Please accept our deepest condolences during this profound moment. Our directors at Elysium are available 24/7. I have initiated the initial first-call arrangement intake for your ${deceasedName}. Our transfer team is on standby. Could you please share the exact facility or room location so we can arrange transport?`,
+      messageText: `Please accept our deepest condolences during this profound moment. Our directors at Evergreen are available 24/7. I have initiated the initial first-call arrangement intake for your ${deceasedName}. Our transfer team is on standby. Could you please share the exact facility or room location so we can arrange transport?`,
       extractedCaseData: {
         deceasedName: `${deceasedName} (Intake)`,
         placeOfDeath: place,
@@ -102,7 +102,7 @@ export const generateAiFuneralResponse = (
 
   // Default empathetic response
   return {
-    messageText: `Thank you for reaching out to Elysium Funeral Directors. We are here to support your family every step of the way. How can I best assist you with your arrangement planning today?`,
+    messageText: `Thank you for reaching out to Evergreen Funeral Directors. We are here to support your family every step of the way. How can I best assist you with your arrangement planning today?`,
     requiresHumanHandover: false
   };
 };

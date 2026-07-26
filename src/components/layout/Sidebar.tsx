@@ -54,7 +54,7 @@ export const Sidebar: React.FC = () => {
     <aside
       style={{
         width: sidebarWidth,
-        backgroundColor: '#0f172a',
+        backgroundColor: 'var(--bg-sidebar-header)',
         color: '#f8fafc',
         height: '100vh',
         position: 'sticky',
@@ -85,7 +85,7 @@ export const Sidebar: React.FC = () => {
                 width: '32px',
                 height: '32px',
                 borderRadius: '8px',
-                background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                background: 'var(--golden-emblem)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -97,8 +97,8 @@ export const Sidebar: React.FC = () => {
               E
             </div>
             <div>
-              <div style={{ fontSize: '15px', fontWeight: '800', letterSpacing: '0.02em', color: '#ffffff' }}>
-                ELYSIUM
+              <div className="brand-title" style={{ fontSize: '15px', fontWeight: '700', letterSpacing: '0.04em', color: '#ffffff' }}>
+                EVERGREEN
               </div>
               <div style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '600' }}>
                 Funeral CRM
@@ -111,7 +111,7 @@ export const Sidebar: React.FC = () => {
               width: '36px',
               height: '36px',
               borderRadius: '8px',
-              background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+              background: 'var(--golden-emblem)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -162,7 +162,7 @@ export const Sidebar: React.FC = () => {
                   padding: isSidebarCollapsed ? '10px 0' : '10px 14px',
                   borderRadius: 'var(--radius-md)',
                   border: 'none',
-                  backgroundColor: isActive ? '#2563eb' : 'transparent',
+                  backgroundColor: isActive ? 'var(--primary-accent)' : 'transparent',
                   color: isActive ? '#ffffff' : '#94a3b8',
                   fontWeight: isActive ? 600 : 500,
                   fontSize: '13px',

@@ -1,56 +1,65 @@
 :root {
-  --font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
   
-  /* Color Palette - Premium Enterprise Light Theme */
-  --bg-app: #f8fafc;
-  --bg-surface: #ffffff;
-  --bg-subtle: #f1f5f9;
-  --bg-hover: #f8fafc;
-  --bg-active: #f1f5f9;
+  /* Color Palette - Premium Eterna OS / Evergreen Theme */
+  --bg-app: #F8F7F4;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F1F0EC;
+  --bg-hover: #F8F7F4;
+  --bg-active: #E8EFE6;
   
-  --border-light: #f1f5f9;
-  --border-color: #e2e8f0;
-  --border-strong: #cbd5e1;
+  --bg-sidebar-header: #1D242B;
   
-  --primary: #1e293b;
-  --primary-accent: #2563eb;
-  --primary-accent-hover: #1d4ed8;
-  --primary-light: #eff6ff;
-  --primary-border: #bfdbfe;
+  --border-light: #F1F0EC;
+  --border-color: #E6E4DF;
+  --border-strong: #D5D2CA;
   
-  --text-main: #0f172a;
-  --text-body: #334155;
-  --text-muted: #64748b;
-  --text-subtle: #94a3b8;
-  --text-inverse: #ffffff;
+  --primary: #1D242B;
+  --primary-accent: #7A9073;
+  --primary-accent-hover: #677C60;
+  --primary-light: #E8EFE6;
+  --primary-border: #C8D7C4;
+  
+  --golden-emblem: #C5B382;
+  
+  --text-main: #191E24;
+  --text-body: #5E666E;
+  --text-muted: #949CA4;
+  --text-subtle: #A3AAB1;
+  --text-inverse: #FFFFFF;
   
   /* Status Colors */
-  --status-active-bg: #ecfdf5;
-  --status-active-text: #047857;
-  --status-active-border: #a7f3d0;
+  --status-active-bg: #E8EFE6;
+  --status-active-text: #7A9073;
+  --status-active-border: #C8D7C4;
   
-  --status-scheduled-bg: #eff6ff;
-  --status-scheduled-text: #1d4ed8;
-  --status-scheduled-border: #bfdbfe;
+  --status-scheduled-bg: #EAF0FA;
+  --status-scheduled-text: #3B66AD;
+  --status-scheduled-border: #C2D5F0;
   
-  --status-transit-bg: #fef3c7;
-  --status-transit-text: #b45309;
-  --status-transit-border: #fde68a;
+  --status-transit-bg: #FBF2DE;
+  --status-transit-text: #B28228;
+  --status-transit-border: #F6E2B7;
   
-  --status-completed-bg: #f1f5f9;
-  --status-completed-text: #475569;
-  --status-completed-border: #cbd5e1;
+  --status-completed-bg: #F1F0EC;
+  --status-completed-text: #5E666E;
+  --status-completed-border: #E6E4DF;
   
-  --status-urgent-bg: #fff1f2;
-  --status-urgent-text: #e11d48;
-  --status-urgent-border: #fecdd3;
+  --status-urgent-bg: #FDE8E8;
+  --status-urgent-text: #C84040;
+  --status-urgent-border: #F9C5C5;
   
+  --status-vip-bg: #F5EBF8;
+  --status-vip-text: #8A40A8;
+  --status-vip-border: #E8D3EE;
+
   /* Shadow System */
-  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03);
-  --shadow-drawer: -8px 0 24px -4px rgba(15, 23, 42, 0.12);
+  --shadow-xs: 0 1px 2px 0 rgba(29, 36, 43, 0.03);
+  --shadow-sm: 0 1px 3px 0 rgba(29, 36, 43, 0.05), 0 1px 2px -1px rgba(29, 36, 43, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(29, 36, 43, 0.05), 0 2px 4px -2px rgba(29, 36, 43, 0.03);
+  --shadow-lg: 0 12px 24px -4px rgba(29, 36, 43, 0.06), 0 4px 6px -2px rgba(29, 36, 43, 0.02);
+  --shadow-drawer: -8px 0 24px -4px rgba(29, 36, 43, 0.08);
   
   /* Layout Dimensions */
   --sidebar-width: 260px;
@@ -113,8 +122,14 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
-h1 { font-size: 24px; line-height: 32px; }
-h2 { font-size: 20px; line-height: 28px; }
+.brand-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+h1 { font-family: var(--font-display); font-size: 24px; line-height: 32px; font-weight: 600; }
+h2 { font-family: var(--font-display); font-size: 20px; line-height: 28px; font-weight: 600; }
 h3 { font-size: 16px; line-height: 24px; }
 h4 { font-size: 14px; line-height: 20px; }
 
@@ -139,12 +154,12 @@ h4 { font-size: 14px; line-height: 20px; }
 .btn-primary {
   background-color: var(--primary-accent);
   color: var(--text-inverse);
-  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 1px 2px rgba(122, 144, 115, 0.3);
 }
 
 .btn-primary:hover {
   background-color: var(--primary-accent-hover);
-  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 4px 8px rgba(122, 144, 115, 0.25);
   transform: translateY(-1px);
 }
 
@@ -166,7 +181,7 @@ h4 { font-size: 14px; line-height: 20px; }
 }
 
 .btn-dark:hover {
-  background-color: #020617;
+  background-color: #0d1216;
 }
 
 .btn-ghost {
@@ -271,6 +286,12 @@ h4 { font-size: 14px; line-height: 20px; }
   border-color: var(--status-urgent-border);
 }
 
+.badge-vip {
+  background-color: var(--status-vip-bg);
+  color: var(--status-vip-text);
+  border-color: var(--status-vip-border);
+}
+
 /* Data Table Styling */
 .table-container {
   width: 100%;
@@ -289,7 +310,7 @@ h4 { font-size: 14px; line-height: 20px; }
 
 .crm-table th {
   background-color: var(--bg-subtle);
-  color: var(--text-muted);
+  color: var(--text-body);
   font-weight: 600;
   text-align: left;
   padding: 12px 16px;
@@ -404,7 +425,7 @@ h4 { font-size: 14px; line-height: 20px; }
 .drawer-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(15, 23, 42, 0.4);
+  background-color: rgba(29, 36, 43, 0.4);
   backdrop-filter: blur(2px);
   z-index: 100;
   animation: fadeIn 0.2s ease;
@@ -429,7 +450,7 @@ h4 { font-size: 14px; line-height: 20px; }
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(15, 23, 42, 0.5);
+  background-color: rgba(29, 36, 43, 0.5);
   backdrop-filter: blur(4px);
   z-index: 200;
   display: flex;
@@ -449,6 +470,11 @@ h4 { font-size: 14px; line-height: 20px; }
   overflow-y: auto;
   border: 1px solid var(--border-color);
   animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-header {
+  font-family: var(--font-display);
+  font-weight: 600;
 }
 
 @keyframes fadeIn {
@@ -479,5 +505,5 @@ h4 { font-size: 14px; line-height: 20px; }
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-subtle);
+  background: var(--text-muted);
 }
