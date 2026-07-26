@@ -62,9 +62,9 @@
   --shadow-drawer: -8px 0 24px -4px rgba(29, 36, 43, 0.08);
   
   /* Layout Dimensions */
-  --sidebar-width: 260px;
+  --sidebar-width: 230px;
   --sidebar-collapsed-width: 72px;
-  --header-height: 64px;
+  --header-height: 52px;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;

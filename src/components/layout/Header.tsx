@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useCRM } from '../../context/CRMContext';
+import { Search, Plus, Bell, Mail, HelpCircle } from 'lucide-react';
 import { NotificationPopover } from '../common/NotificationPopover';
-import { Search, Plus, Bell, Calendar as CalendarIcon, HelpCircle } from 'lucide-react';
 
 export const Header: React.FC = () => {
-  const { currentModule, searchQuery, setSearchQuery, setIsCreateCaseModalOpen, notifications } = useCRM();
+  const { searchQuery, setSearchQuery, setIsCreateCaseModalOpen } = useCRM();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-
-  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <header
@@ -18,117 +16,179 @@ export const Header: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 32px',
+        padding: '0 24px',
         position: 'sticky',
         top: 0,
         zIndex: 30,
-        boxShadow: 'var(--shadow-xs)'
+        boxSizing: 'border-box'
       }}
     >
-      {/* Title & Path */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <h1 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)' }}>
-          {currentModule}
-        </h1>
-        <span
-          style={{
-            fontSize: '11px',
-            fontWeight: 600,
-            padding: '2px 8px',
-            borderRadius: '999px',
-            backgroundColor: 'var(--bg-subtle)',
-            color: 'var(--text-muted)'
-          }}
-        >
-          Evergreen Directors Suite
-        </span>
-      </div>
-
-      {/* Center Global Search */}
-      <div style={{ flex: '0 1 420px' }}>
-        <div className="search-input-wrapper">
-          <Search size={16} className="search-icon" />
+      {/* Left: Search Container */}
+      <div style={{ flex: '0 1 360px', position: 'relative', display: 'flex', alignItems: 'center' }}>
+        <div className="search-input-wrapper" style={{ width: '100%' }}>
+          <Search size={15} className="search-icon" style={{ left: '10px' }} />
           <input
             type="text"
             className="input-field"
-            placeholder="Search deceased name, case #, family contact..."
+            placeholder="Search anything... (e.g. Cases, Families, Documents)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ borderRadius: 'var(--radius-full)' }}
+            style={{
+              paddingLeft: '32px',
+              paddingRight: '48px',
+              height: '32px',
+              borderRadius: '6px',
+              fontSize: '12px',
+              backgroundColor: 'var(--bg-app)',
+              border: '1px solid var(--border-color)',
+              width: '100%'
+            }}
           />
+          {/* ⌘ K Pill */}
+          <div
+            style={{
+              position: 'absolute',
+              right: '8px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              fontSize: '10px',
+              color: 'var(--text-muted)',
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid var(--border-color)',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              pointerEvents: 'none',
+              fontFamily: 'monospace',
+              fontWeight: 600
+            }}
+          >
+            ⌘ K
+          </div>
         </div>
       </div>
 
-      {/* Right Controls */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative' }}>
-        {/* Today's Date */}
-        <div
+      {/* Right: Actions */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        {/* Circle green intake button (+) */}
+        <button
+          onClick={() => setIsCreateCaseModalOpen(true)}
           style={{
+            width: '28px',
+            height: '28px',
+            borderRadius: '50%',
+            backgroundColor: 'var(--primary-accent)',
+            color: '#ffffff',
+            border: 'none',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '12px',
-            color: 'var(--text-muted)',
-            fontWeight: 500,
-            padding: '6px 12px',
-            backgroundColor: 'var(--bg-subtle)',
-            borderRadius: 'var(--radius-md)'
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-xs)',
+            transition: 'background-color 0.15s'
           }}
+          title="New Case Intake"
         >
-          <CalendarIcon size={14} />
-          <span>Tuesday, July 21, 2026</span>
+          <Plus size={16} />
+        </button>
+
+        {/* Bell with badge 8 */}
+        <div style={{ position: 'relative' }}>
+          <button
+            onClick={() => setIsNotifOpen(prev => !prev)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-main)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '4px'
+            }}
+            title="Notifications"
+          >
+            <Bell size={20} />
+          </button>
+          <span
+            style={{
+              position: 'absolute',
+              top: '-2px',
+              right: '-2px',
+              width: '14px',
+              height: '14px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--status-urgent-text)',
+              color: '#ffffff',
+              fontSize: '9px',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            8
+          </span>
         </div>
 
-        {/* Notifications */}
+        {/* Mail with badge 4 */}
+        <div style={{ position: 'relative' }}>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-main)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '4px'
+            }}
+            title="Messages"
+          >
+            <Mail size={20} />
+          </button>
+          <span
+            style={{
+              position: 'absolute',
+              top: '-2px',
+              right: '-2px',
+              width: '14px',
+              height: '14px',
+              borderRadius: '50%',
+              backgroundColor: '#3b82f6',
+              color: '#ffffff',
+              fontSize: '9px',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            4
+          </span>
+        </div>
+
+        {/* Help icon */}
         <button
-          className="btn btn-secondary btn-icon-only"
-          style={{ position: 'relative' }}
-          onClick={() => setIsNotifOpen(prev => !prev)}
-          title="Notifications Center"
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--text-muted)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '4px'
+          }}
+          title="Help"
         >
-          <Bell size={18} />
-          {unreadCount > 0 && (
-            <span
-              style={{
-                position: 'absolute',
-                top: '-2px',
-                right: '-2px',
-                minWidth: '16px',
-                height: '16px',
-                borderRadius: '999px',
-                backgroundColor: '#ef4444',
-                color: '#ffffff',
-                fontSize: '10px',
-                fontWeight: 800,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '0 4px'
-              }}
-            >
-              {unreadCount}
-            </span>
-          )}
+          <HelpCircle size={20} />
         </button>
 
         <NotificationPopover
           isOpen={isNotifOpen}
           onClose={() => setIsNotifOpen(false)}
         />
-
-        {/* Quick Help */}
-        <button className="btn btn-secondary btn-icon-only" title="Help & Documentation">
-          <HelpCircle size={18} />
-        </button>
-
-        {/* Quick New Case Button */}
-        <button
-          className="btn btn-primary"
-          onClick={() => setIsCreateCaseModalOpen(true)}
-        >
-          <Plus size={16} />
-          <span>New Case</span>
-        </button>
       </div>
     </header>
   );
