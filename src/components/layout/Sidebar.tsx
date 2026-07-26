@@ -6,11 +6,9 @@ import {
   Users,
   MessageSquare,
   Calendar,
-  CheckSquare,
+  Sparkles,
   FileText,
   CreditCard,
-  Truck,
-  Package,
   UserCheck,
   BarChart3,
   Settings,
@@ -25,10 +23,9 @@ interface NavItem {
 }
 
 export const Sidebar: React.FC = () => {
-  const { currentModule, setCurrentModule, isSidebarCollapsed, setIsSidebarCollapsed, cases, tasks, invoices, conversations } = useCRM();
+  const { currentModule, setCurrentModule, isSidebarCollapsed, setIsSidebarCollapsed, cases, invoices, conversations } = useCRM();
 
   const activeCasesCount = cases.filter(c => c.status !== 'Completed' && c.status !== 'Archived').length;
-  const pendingTasksCount = tasks.filter(t => t.status !== 'Completed').length;
   const pendingInvoicesCount = invoices.filter(i => i.status === 'Pending' || i.status === 'Overdue').length;
   const unreadConversationsCount = conversations.reduce((sum, c) => sum + c.unreadCount, 0);
 
@@ -36,15 +33,13 @@ export const Sidebar: React.FC = () => {
     { name: 'Dashboard', icon: LayoutDashboard },
     { name: 'Cases', icon: FolderKanban, badge: activeCasesCount },
     { name: 'Families', icon: Users },
-    { name: 'Conversations', icon: MessageSquare, badge: unreadConversationsCount },
     { name: 'Calendar', icon: Calendar },
-    { name: 'Tasks', icon: CheckSquare, badge: pendingTasksCount },
-    { name: 'Documents', icon: FileText },
-    { name: 'Invoices', icon: CreditCard, badge: pendingInvoicesCount },
-    { name: 'Vehicles', icon: Truck },
-    { name: 'Inventory', icon: Package },
-    { name: 'Staff', icon: UserCheck },
+    { name: 'Communications', icon: MessageSquare, badge: unreadConversationsCount },
+    { name: 'AI Assistant', icon: Sparkles },
     { name: 'Reports', icon: BarChart3 },
+    { name: 'Staff & Resources', icon: UserCheck },
+    { name: 'Financials', icon: CreditCard, badge: pendingInvoicesCount },
+    { name: 'Documents', icon: FileText },
     { name: 'Settings', icon: Settings },
   ];
 
@@ -224,13 +219,13 @@ export const Sidebar: React.FC = () => {
               fontSize: '13px'
             }}
           >
-            MV
+            MA
           </div>
           <div style={{ overflow: 'hidden' }}>
             <div style={{ fontSize: '13px', fontWeight: 600, color: '#f8fafc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              Marcus Vance
+              Michael Anderson
             </div>
-            <div style={{ fontSize: '11px', color: '#94a3b8' }}>Senior Director</div>
+            <div style={{ fontSize: '11px', color: '#94a3b8' }}>Owner</div>
           </div>
         </div>
       )}

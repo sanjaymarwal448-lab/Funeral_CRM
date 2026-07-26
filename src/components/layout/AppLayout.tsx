@@ -11,12 +11,11 @@ import { DashboardView } from '../dashboard/DashboardView';
 import { CasesView } from '../cases/CasesView';
 import { FamiliesView } from '../families/FamiliesView';
 import { ConversationsView } from '../conversations/ConversationsView';
+import { AIAssistantView } from '../ai/AIAssistantView';
 import { CalendarView } from '../calendar/CalendarView';
 import { TasksView } from '../tasks/TasksView';
 import { DocumentsView } from '../documents/DocumentsView';
 import { InvoicesView } from '../invoices/InvoicesView';
-import { VehiclesView } from '../vehicles/VehiclesView';
-import { InventoryView } from '../inventory/InventoryView';
 import { StaffView } from '../staff/StaffView';
 import { ReportsView } from '../reports/ReportsView';
 import { SettingsView } from '../settings/SettingsView';
@@ -32,21 +31,19 @@ export const AppLayout: React.FC = () => {
         return <CasesView />;
       case 'Families':
         return <FamiliesView />;
-      case 'Conversations':
+      case 'Communications':
         return <ConversationsView />;
+      case 'AI Assistant':
+        return <AIAssistantView />;
       case 'Calendar':
         return <CalendarView />;
       case 'Tasks':
         return <TasksView />;
       case 'Documents':
         return <DocumentsView />;
-      case 'Invoices':
+      case 'Financials':
         return <InvoicesView />;
-      case 'Vehicles':
-        return <VehiclesView />;
-      case 'Inventory':
-        return <InventoryView />;
-      case 'Staff':
+      case 'Staff & Resources':
         return <StaffView />;
       case 'Reports':
         return <ReportsView />;
