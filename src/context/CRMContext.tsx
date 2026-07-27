@@ -517,9 +517,8 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (contactName) {
       setFamilies(prev => {
         const existingFamilyIndex = prev.findIndex(f => 
-          (contactEmail && f.email === contactEmail) || 
-          (contactPhone && f.phone === contactPhone) ||
-          (f.name.toLowerCase().includes(contactName.toLowerCase()))
+          (contactEmail && f.email && f.email === contactEmail) || 
+          (contactPhone && f.phone && f.phone === contactPhone)
         );
 
         if (existingFamilyIndex !== -1) {
