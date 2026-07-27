@@ -174,174 +174,19 @@ const INITIAL_WHATSAPP_SETTINGS: WhatsAppSettings = {
 };
 
 // INITIAL MOCK CONVERSATIONS & CHAT MESSAGES
-const INITIAL_CONVERSATIONS: Conversation[] = [
-  {
-    id: 'conv-101',
-    familyId: 'fam-1',
-    familyName: 'Sterling Family (Arthur Sterling)',
-    familyPhone: '(206) 555-0192',
-    familyEmail: 'arthur.sterling@example.com',
-    caseId: 'case-101',
-    caseNumber: 'FHC-2026-0841',
-    deceasedName: 'Eleanor Vance Sterling',
-    assignedStaffId: 'staff-1',
-    assignedStaffName: 'Marcus Vance',
-    status: 'Waiting for Family',
-    isPinned: true,
-    unreadCount: 1,
-    lastMessage: 'We have approved the obituary text for the Seattle Times. Please proceed with publication.',
-    lastMessageTime: '10:42 AM',
-    preferredChannel: 'WhatsApp',
-    isAiEnabled: true
-  },
-  {
-    id: 'conv-102',
-    familyId: 'fam-2',
-    familyName: 'Harrison Family (Margaret Harrison)',
-    familyPhone: '(425) 555-0144',
-    familyEmail: 'm.harrison@example.com',
-    caseId: 'case-102',
-    caseNumber: 'FHC-2026-0842',
-    deceasedName: 'Robert James Harrison',
-    assignedStaffId: 'staff-2',
-    assignedStaffName: 'Elena Rostova',
-    status: 'Open',
-    isPinned: false,
-    unreadCount: 0,
-    lastMessage: 'Thank you Director Rostova. The cremation authorization form has been signed digitally.',
-    lastMessageTime: 'Yesterday',
-    preferredChannel: 'Email',
-    isAiEnabled: true
-  },
-  {
-    id: 'conv-103',
-    familyId: 'fam-3',
-    familyName: 'Montgomery Family (Clara Montgomery)',
-    familyPhone: '(206) 555-0873',
-    familyEmail: 'clara.m@example.com',
-    caseId: 'case-103',
-    caseNumber: 'FHC-2026-0843',
-    deceasedName: 'Harold Montgomery',
-    assignedStaffId: 'staff-1',
-    assignedStaffName: 'Marcus Vance',
-    status: 'Waiting for Staff',
-    isPinned: false,
-    unreadCount: 2,
-    lastMessage: 'Could we schedule the outdoor pavilion setup at 10 AM instead of 11 AM?',
-    lastMessageTime: '09:15 AM',
-    preferredChannel: 'SMS',
-    isAiEnabled: true
-  }
-];
-
-const INITIAL_CHAT_MESSAGES: ChatMessage[] = [
-  {
-    id: 'msg-1',
-    conversationId: 'conv-101',
-    senderName: 'Marcus Vance',
-    senderRole: 'staff',
-    avatar: 'MV',
-    channel: 'WhatsApp',
-    content: 'Good morning Mr. Sterling. I have attached the draft obituary for your mother Eleanor. Please review at your earliest convenience.',
-    attachments: [
-      { name: 'Draft_Obituary_Eleanor_Sterling.pdf', url: '#', size: '1.2 MB', type: 'pdf' }
-    ],
-    timestamp: 'Yesterday 04:15 PM',
-    read: true,
-    deliveryStatus: 'read'
-  },
-  {
-    id: 'msg-2',
-    conversationId: 'conv-101',
-    senderName: 'Marcus Vance',
-    senderRole: 'staff',
-    avatar: 'MV',
-    channel: 'Internal Note',
-    content: 'Internal Note: Son Arthur called regarding organist selection. Confirmed "Amazing Grace" and "Abide With Me".',
-    timestamp: 'Yesterday 05:00 PM',
-    read: true,
-    deliveryStatus: 'read'
-  },
-  {
-    id: 'msg-3',
-    conversationId: 'conv-101',
-    senderName: 'Arthur Sterling',
-    senderRole: 'family',
-    avatar: 'AS',
-    channel: 'WhatsApp',
-    content: 'We have approved the obituary text for the Seattle Times. Please proceed with publication.',
-    timestamp: 'Today 10:42 AM',
-    read: false,
-    deliveryStatus: 'delivered'
-  }
-];
-
-const INITIAL_CASES: Case[] = [
-  {
-    id: 'case-101',
-    caseNumber: 'FHC-2026-0841',
-    deceasedName: 'Eleanor Vance Sterling',
-    dateOfBirth: '1942-03-14',
-    dateOfDeath: '2026-07-18',
-    placeOfDeath: 'St. Jude Memorial Hospital, Seattle',
-    primaryContactId: 'fam-1',
-    primaryContactName: 'Arthur Sterling',
-    relationship: 'Son',
-    phone: '(206) 555-0192',
-    email: 'arthur.sterling@example.com',
-    serviceType: 'Traditional Funeral',
-    funeralDate: '2026-07-23',
-    funeralTime: '10:30 AM',
-    location: 'Main Chapel - Grace Memorial',
-    assignedStaffId: 'staff-1',
-    assignedStaffName: 'Marcus Vance',
-    status: 'Service Scheduled',
-    estimatedCost: 8450,
-    paidAmount: 5000,
-    notesCount: 2,
-    docsCount: 3,
-    createdAt: '2026-07-18'
-  }
-];
-
+const INITIAL_CONVERSATIONS: Conversation[] = [];
+const INITIAL_CHAT_MESSAGES: ChatMessage[] = [];
+const INITIAL_CASES: Case[] = [];
 const INITIAL_TIMELINE: CaseTimelineEvent[] = [];
 const INITIAL_TASKS: CaseTask[] = [];
 const INITIAL_DOCS: CaseDocument[] = [];
 const INITIAL_NOTES: CaseNote[] = [];
-const INITIAL_FAMILIES: Family[] = [
-  {
-    id: 'fam-1',
-    name: 'Sterling Family',
-    relationship: 'Son / Next of Kin',
-    phone: '(206) 555-0192',
-    email: 'arthur.sterling@example.com',
-    address: '1420 Highland Dr, Seattle, WA 98109',
-    linkedCases: [
-      { caseId: 'case-101', deceasedName: 'Eleanor Vance Sterling', caseNumber: 'FHC-2026-0841' }
-    ],
-    lastActivity: '2026-07-20 (Invoice Paid)',
-    notes: 'Prefers communication via phone calls before 5 PM.'
-  }
-];
-
+const INITIAL_FAMILIES: Family[] = [];
 const INITIAL_CALENDAR: CalendarEvent[] = [];
 const INITIAL_INVOICES: Invoice[] = [];
 const INITIAL_VEHICLES: Vehicle[] = [];
 const INITIAL_INVENTORY: InventoryItem[] = [];
-const INITIAL_STAFF: StaffMember[] = [
-  {
-    id: 'staff-1',
-    name: 'Marcus Vance',
-    position: 'Senior Funeral Director',
-    role: 'Funeral Director',
-    email: 'm.vance@evergreenfuneral.com',
-    phone: '(206) 555-0101',
-    status: 'Active',
-    photo: 'MV',
-    activeCasesCount: 2
-  }
-];
-
+const INITIAL_STAFF: StaffMember[] = [];
 const INITIAL_NOTIFICATIONS: AppNotification[] = [];
 
 const INITIAL_SETTINGS: CompanySettings = {
@@ -380,7 +225,7 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Conversations & Messages State
   const [conversations, setConversations] = useState<Conversation[]>(INITIAL_CONVERSATIONS);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(INITIAL_CHAT_MESSAGES);
-  const [activeConversationId, setActiveConversationId] = useState<string | null>('conv-101');
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
   // Entities State
   const [cases, setCases] = useState<Case[]>(INITIAL_CASES);
