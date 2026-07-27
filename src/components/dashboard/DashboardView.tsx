@@ -39,6 +39,13 @@ export const DashboardView: React.FC = () => {
     </svg>
   );
 
+  const WhatsAppIcon = ({ size = 14, style }: { size?: number; style?: React.CSSProperties }) => (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ ...style, display: 'inline-block', verticalAlign: 'middle' }}>
+      <path d="M17.4 14.3c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4-.1-.5-.1-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5-.2 0-.4 0-.6 0-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.1-1.4-.1-.1-.3-.2-.6-.3z" />
+      <path d="M12 21.8c-1.9 0-3.8-.5-5.5-1.5L2 22l1.7-4.3c-1.1-1.8-1.7-3.9-1.7-6.1C2 5.2 6.5.7 12 .7s10 4.5 10 10.9-4.5 10.2-10 10.2z" />
+    </svg>
+  );
+
   const PlusIcon = () => (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M6 2.5V9.5M2.5 6H9.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -240,7 +247,7 @@ export const DashboardView: React.FC = () => {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', padding: '4px 0' }}>
               {/* Connector line behind stages */}
-              <div style={{ position: 'absolute', left: '10%', right: '10%', top: '35%', height: '1.5px', backgroundColor: 'var(--border-color)', zIndex: 1 }} />
+              <div style={{ position: 'absolute', left: '10%', right: '10%', top: '16px', height: '1.5px', backgroundColor: 'var(--border-color)', zIndex: 1 }} />
 
               {[
                 { step: 'First Call', val: '28', icon: <Phone size={14} /> },
@@ -380,7 +387,7 @@ export const DashboardView: React.FC = () => {
               </div>
 
               <div style={{ padding: '8px 10px', backgroundColor: 'var(--status-active-bg)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <MessageSquare size={14} style={{ color: 'var(--status-active-text)' }} />
+                <WhatsAppIcon size={14} style={{ color: 'var(--status-active-text)' }} />
                 <div>
                   <div style={{ fontSize: '9px', color: 'var(--status-active-text)', fontWeight: 600 }}>WhatsApp</div>
                   <strong style={{ fontSize: '14px', color: 'var(--status-active-text)' }}>8</strong>
