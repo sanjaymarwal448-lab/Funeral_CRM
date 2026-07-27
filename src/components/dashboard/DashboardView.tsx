@@ -12,7 +12,10 @@ import {
   Mail,
   Sparkles,
   ArrowUpRight,
-  Clock
+  Clock,
+  Eye,
+  Heart,
+  FileText
 } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area } from 'recharts';
 
@@ -33,6 +36,12 @@ export const DashboardView: React.FC = () => {
   const ChristianCrossIcon = () => (
     <svg width="10" height="15" viewBox="0 0 10 15" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline-block', verticalAlign: 'middle' }}>
       <path d="M5 1V14M1.5 5H8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+
+  const PlusIcon = () => (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 2.5V9.5M2.5 6H9.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   );
 
@@ -234,13 +243,13 @@ export const DashboardView: React.FC = () => {
               <div style={{ position: 'absolute', left: '10%', right: '10%', top: '35%', height: '1.5px', backgroundColor: 'var(--border-color)', zIndex: 1 }} />
 
               {[
-                { step: 'First Call', val: '28' },
-                { step: 'Preparation', val: '18' },
-                { step: 'Viewing', val: '7' },
-                { step: 'Funeral ✝', val: '10', hasCross: true },
-                { step: 'Aftercare', val: '12' }
+                { step: 'First Call', val: '28', icon: <Phone size={14} /> },
+                { step: 'Preparation', val: '18', icon: <FileText size={14} /> },
+                { step: 'Viewing', val: '7', icon: <Eye size={14} /> },
+                { step: 'Funeral', val: '10', icon: <ChristianCrossIcon /> },
+                { step: 'Aftercare', val: '12', icon: <Heart size={14} /> }
               ].map((step, idx) => (
-                <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', zIndex: 5, position: 'relative' }}>
+                <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', zIndex: 5, position: 'relative' }}>
                   <div style={{
                     width: '32px',
                     height: '32px',
@@ -250,14 +259,16 @@ export const DashboardView: React.FC = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: 800,
-                    color: 'var(--primary-accent)'
+                    color: 'var(--primary-accent)',
+                    boxShadow: 'var(--shadow-xs)'
                   }}>
-                    {step.val}
+                    {step.icon}
                   </div>
-                  <span style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                    {step.hasCross ? <>Funeral <ChristianCrossIcon /></> : step.step}
+                  <span style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-body)', marginTop: '2px', textAlign: 'center' }}>
+                    {step.step}
+                  </span>
+                  <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-main)', marginTop: '1px' }}>
+                    {step.val}
                   </span>
                 </div>
               ))}
