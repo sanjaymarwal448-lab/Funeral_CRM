@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+import brandLogoImg from '../../assets/logo.png';
 
 interface NavItem {
   name: string;
@@ -45,28 +46,6 @@ export const Sidebar: React.FC = () => {
 
   const sidebarWidth = isSidebarCollapsed ? 'var(--sidebar-collapsed-width)' : 'var(--sidebar-width)';
 
-  // High-fidelity recreation of the attached branching leaf emblem logo
-  const BrandLogo = () => (
-    <svg viewBox="0 0 100 100" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: '#9CA88E' }}>
-      {/* Stem */}
-      <path d="M50 90C50 90 50 42 50 15" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-      {/* Top center leaf */}
-      <path d="M50 35C47 25 50 15 50 15C50 15 53 25 50 35Z" fill="currentColor"/>
-      {/* Upper pair of leaves */}
-      <path d="M50 48C39 39 39 30 43 27C47 24 49 33 50 40Z" fill="currentColor"/>
-      <path d="M50 48C61 39 61 30 57 27C53 24 51 33 50 40Z" fill="currentColor"/>
-      {/* Middle pair of leaves */}
-      <path d="M50 62C32 54 28 45 34 41C40 37 46 48 50 55Z" fill="currentColor"/>
-      <path d="M50 62C68 54 72 45 66 41C60 37 54 48 50 55Z" fill="currentColor"/>
-      {/* Lower pair of leaves */}
-      <path d="M50 72C36 68 34 61 38 57C42 53 47 62 50 67Z" fill="currentColor"/>
-      <path d="M50 72C64 68 66 61 62 57C58 53 53 62 50 67Z" fill="currentColor"/>
-      {/* Small lowest pair of leaves */}
-      <path d="M50 80C43 80 40 75 43 73C46 71 48 76 50 78Z" fill="currentColor"/>
-      <path d="M50 80C57 80 60 75 57 73C54 71 52 76 50 78Z" fill="currentColor"/>
-    </svg>
-  );
-
   return (
     <aside
       style={{
@@ -96,44 +75,51 @@ export const Sidebar: React.FC = () => {
         }}
       >
         {!isSidebarCollapsed ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div
               style={{
-                width: '36px',
-                height: '36px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)'
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                padding: '2px',
+                boxSizing: 'border-box'
               }}
             >
-              <BrandLogo />
+              <img src={brandLogoImg} alt="Evergreen Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div>
-              <div className="brand-title" style={{ fontSize: '15px', fontWeight: '700', letterSpacing: '0.04em', color: '#ffffff', lineHeight: 1.1 }}>
+              <div className="brand-title" style={{ fontSize: '17px', fontWeight: '700', letterSpacing: '0.04em', color: '#ffffff', lineHeight: 1.1 }}>
                 Evergreen
               </div>
-              <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '600', marginTop: '2px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '600', marginTop: '2px' }}>
                 Funeral Homes
               </div>
             </div>
           </div>
         ) : (
-          <div
+          <button
+            onClick={() => setIsSidebarCollapsed(false)}
             style={{
-              width: '38px',
-              height: '38px',
+              width: '42px',
+              height: '42px',
               borderRadius: '8px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)'
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '2px'
             }}
+            title="Expand Sidebar"
           >
-            <BrandLogo />
-          </div>
+            <img src={brandLogoImg} alt="Evergreen Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          </button>
         )}
 
         {!isSidebarCollapsed && (
