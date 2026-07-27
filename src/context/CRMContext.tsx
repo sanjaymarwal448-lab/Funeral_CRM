@@ -174,34 +174,740 @@ const INITIAL_WHATSAPP_SETTINGS: WhatsAppSettings = {
 };
 
 // INITIAL MOCK CONVERSATIONS & CHAT MESSAGES
-const INITIAL_CONVERSATIONS: Conversation[] = [];
-const INITIAL_CHAT_MESSAGES: ChatMessage[] = [];
-const INITIAL_CASES: Case[] = [];
-const INITIAL_TIMELINE: CaseTimelineEvent[] = [];
-const INITIAL_TASKS: CaseTask[] = [];
-const INITIAL_DOCS: CaseDocument[] = [];
-const INITIAL_NOTES: CaseNote[] = [];
-const INITIAL_FAMILIES: Family[] = [];
-const INITIAL_CALENDAR: CalendarEvent[] = [];
-const INITIAL_INVOICES: Invoice[] = [];
-const INITIAL_VEHICLES: Vehicle[] = [];
-const INITIAL_INVENTORY: InventoryItem[] = [];
-const INITIAL_STAFF: StaffMember[] = [];
-const INITIAL_NOTIFICATIONS: AppNotification[] = [];
+const INITIAL_CONVERSATIONS: Conversation[] = [
+  {
+    id: 'conv-101',
+    familyId: 'fam-101',
+    familyName: 'Sterling Family (Arthur Sterling)',
+    familyPhone: '020-555-0192',
+    familyEmail: 'arthur.sterling@example.com',
+    caseId: 'case-101',
+    caseNumber: 'FHC-2026-8451',
+    deceasedName: 'Eleanor Vance Sterling',
+    assignedStaffId: 'staff-1',
+    assignedStaffName: 'Marcus Vance',
+    status: 'Waiting for Family',
+    isPinned: true,
+    unreadCount: 1,
+    lastMessage: 'Thank you, Marcus. We will review the music options tonight.',
+    lastMessageTime: '10:42 AM',
+    preferredChannel: 'WhatsApp',
+    isAiEnabled: true
+  },
+  {
+    id: 'conv-102',
+    familyId: 'fam-102',
+    familyName: 'Harrison Family (Margaret Harrison)',
+    familyPhone: '0121-555-0144',
+    familyEmail: 'margaret.harrison@example.com',
+    caseId: 'case-102',
+    caseNumber: 'FHC-2026-3842',
+    deceasedName: 'Robert James Harrison',
+    assignedStaffId: 'staff-2',
+    assignedStaffName: 'Elena Rostova',
+    status: 'Open',
+    isPinned: false,
+    unreadCount: 0,
+    lastMessage: 'The cremation forms have been signed online. What are the next steps?',
+    lastMessageTime: 'Yesterday',
+    preferredChannel: 'Email',
+    isAiEnabled: true
+  },
+  {
+    id: 'conv-103',
+    familyId: 'fam-103',
+    familyName: 'Montgomery Family (Clara Montgomery)',
+    familyPhone: '0161-555-0873',
+    familyEmail: 'clara.m@example.com',
+    caseId: 'case-103',
+    caseNumber: 'FHC-2026-7281',
+    deceasedName: 'Harold Montgomery',
+    assignedStaffId: 'staff-1',
+    assignedStaffName: 'Marcus Vance',
+    status: 'Waiting for Staff',
+    isPinned: false,
+    unreadCount: 2,
+    lastMessage: 'Could we change the flower arrangement to white lilies?',
+    lastMessageTime: '09:15 AM',
+    preferredChannel: 'SMS',
+    isAiEnabled: true
+  }
+];
+
+const INITIAL_CHAT_MESSAGES: ChatMessage[] = [
+  {
+    id: 'msg-1',
+    conversationId: 'conv-101',
+    senderName: 'Marcus Vance',
+    senderRole: 'staff',
+    avatar: 'MV',
+    channel: 'WhatsApp',
+    content: 'Good morning Mr. Sterling. I have attached the draft obituary for your mother Eleanor. Please review at your earliest convenience.',
+    attachments: [
+      { name: 'Draft_Obituary_Eleanor_Sterling.pdf', url: '#', size: '1.2 MB', type: 'pdf' }
+    ],
+    timestamp: 'Yesterday 04:15 PM',
+    read: true,
+    deliveryStatus: 'read'
+  },
+  {
+    id: 'msg-2',
+    conversationId: 'conv-101',
+    senderName: 'Marcus Vance',
+    senderRole: 'staff',
+    avatar: 'MV',
+    channel: 'Internal Note',
+    content: 'Internal Note: Son Arthur called regarding organist selection. Confirmed "Amazing Grace" and "Abide With Me".',
+    timestamp: 'Yesterday 05:00 PM',
+    read: true,
+    deliveryStatus: 'read'
+  },
+  {
+    id: 'msg-3',
+    conversationId: 'conv-101',
+    senderName: 'Arthur Sterling',
+    senderRole: 'family',
+    avatar: 'AS',
+    channel: 'WhatsApp',
+    content: 'Thank you, Marcus. We will review the music options tonight.',
+    timestamp: 'Today 10:42 AM',
+    read: false,
+    deliveryStatus: 'delivered'
+  },
+  {
+    id: 'msg-4',
+    conversationId: 'conv-103',
+    senderName: 'Clara Montgomery',
+    senderRole: 'family',
+    avatar: 'CM',
+    channel: 'SMS',
+    content: 'Could we change the flower arrangement to white lilies?',
+    timestamp: 'Today 09:15 AM',
+    read: false,
+    deliveryStatus: 'delivered'
+  }
+];
+
+const INITIAL_CASES: Case[] = [
+  {
+    id: 'case-101',
+    caseNumber: 'FHC-2026-8451',
+    deceasedName: 'Eleanor Vance Sterling',
+    dateOfBirth: '1942-03-14',
+    dateOfDeath: '2026-07-25',
+    placeOfDeath: 'St. Jude Memorial Hospital, London',
+    primaryContactId: 'fam-101',
+    primaryContactName: 'Arthur Sterling',
+    relationship: 'Son',
+    phone: '020-555-0192',
+    email: 'arthur.sterling@example.com',
+    serviceType: 'Traditional Funeral',
+    funeralDate: '2026-07-29',
+    funeralTime: '10:30 AM',
+    location: 'Main Chapel - Grace Memorial',
+    assignedStaffId: 'staff-1',
+    assignedStaffName: 'Marcus Vance',
+    status: 'Service Scheduled',
+    estimatedCost: 7500,
+    paidAmount: 5000,
+    notesCount: 2,
+    docsCount: 3,
+    createdAt: '2026-07-25'
+  },
+  {
+    id: 'case-102',
+    caseNumber: 'FHC-2026-3842',
+    deceasedName: 'Robert James Harrison',
+    dateOfBirth: '1938-11-20',
+    dateOfDeath: '2026-07-26',
+    placeOfDeath: 'City Hospice, Birmingham',
+    primaryContactId: 'fam-102',
+    primaryContactName: 'Margaret Harrison',
+    relationship: 'Spouse',
+    phone: '0121-555-0144',
+    email: 'margaret.harrison@example.com',
+    serviceType: 'Direct Cremation',
+    funeralDate: '2026-08-01',
+    funeralTime: '09:30 AM',
+    location: 'Birmingham Crematorium',
+    assignedStaffId: 'staff-2',
+    assignedStaffName: 'Elena Rostova',
+    status: 'Draft',
+    estimatedCost: 3500,
+    paidAmount: 0,
+    notesCount: 0,
+    docsCount: 1,
+    createdAt: '2026-07-26'
+  },
+  {
+    id: 'case-103',
+    caseNumber: 'FHC-2026-7281',
+    deceasedName: 'Harold Montgomery',
+    dateOfBirth: '1948-05-17',
+    dateOfDeath: '2026-07-24',
+    placeOfDeath: 'Royal Infirmary, Manchester',
+    primaryContactId: 'fam-103',
+    primaryContactName: 'Clara Montgomery',
+    relationship: 'Daughter',
+    phone: '0161-555-0873',
+    email: 'clara.m@example.com',
+    serviceType: 'Memorial Service',
+    funeralDate: '2026-07-30',
+    funeralTime: '01:00 PM',
+    location: 'Greenwood Woodland Chapel',
+    assignedStaffId: 'staff-1',
+    assignedStaffName: 'Marcus Vance',
+    status: 'Active',
+    estimatedCost: 5400,
+    paidAmount: 2000,
+    notesCount: 1,
+    docsCount: 2,
+    createdAt: '2026-07-24'
+  },
+  {
+    id: 'case-104',
+    caseNumber: 'FHC-2026-5821',
+    deceasedName: 'Gwyneth Davies',
+    dateOfBirth: '1935-08-09',
+    dateOfDeath: '2026-07-23',
+    placeOfDeath: 'Western General, Edinburgh',
+    primaryContactId: 'fam-104',
+    primaryContactName: 'Thomas Davies',
+    relationship: 'Son',
+    phone: '0131-555-0921',
+    email: 't.davies@example.com',
+    serviceType: 'Graveside Burial',
+    funeralDate: '2026-07-26',
+    funeralTime: '11:30 AM',
+    location: 'Dean Cemetery',
+    assignedStaffId: 'staff-3',
+    assignedStaffName: 'David Martinez',
+    status: 'Completed',
+    estimatedCost: 6800,
+    paidAmount: 6800,
+    notesCount: 0,
+    docsCount: 2,
+    createdAt: '2026-07-23'
+  },
+  {
+    id: 'case-105',
+    caseNumber: 'FHC-2026-9192',
+    deceasedName: 'Devendra Patel',
+    dateOfBirth: '1952-04-02',
+    dateOfDeath: '2026-07-27',
+    placeOfDeath: 'St. James Hospital, Leeds',
+    primaryContactId: 'fam-105',
+    primaryContactName: 'Priyesh Patel',
+    relationship: 'Son',
+    phone: '0113-555-0382',
+    email: 'p.patel@example.com',
+    serviceType: 'Traditional Funeral',
+    funeralDate: '2026-07-27',
+    funeralTime: '11:00 AM',
+    location: 'Main Chapel - Grace Memorial',
+    assignedStaffId: 'staff-1',
+    assignedStaffName: 'Marcus Vance',
+    status: 'In Transit',
+    estimatedCost: 8200,
+    paidAmount: 8200,
+    notesCount: 0,
+    docsCount: 3,
+    createdAt: '2026-07-27'
+  }
+];
+
+const INITIAL_TIMELINE: CaseTimelineEvent[] = [
+  {
+    id: 'tl-1',
+    caseId: 'case-101',
+    title: 'First Call Intake Complete',
+    description: 'Initial information recorded from son Arthur Sterling.',
+    timestamp: '25/07/2026, 09:30:00',
+    author: 'Marcus Vance',
+    type: 'case_created'
+  },
+  {
+    id: 'tl-2',
+    caseId: 'case-101',
+    title: 'Coroner Release Obtained',
+    description: 'Cremation certificate forms filed at local registry.',
+    timestamp: '26/07/2026, 11:15:00',
+    author: 'Elena Rostova',
+    type: 'document_uploaded'
+  }
+];
+
+const INITIAL_TASKS: CaseTask[] = [
+  {
+    id: 'task-1',
+    caseId: 'case-101',
+    caseName: 'Eleanor Vance Sterling',
+    title: 'Prepare Reposing Suite A',
+    assignedStaffName: 'Sarah Thompson',
+    dueDate: '2026-07-28',
+    dueTime: '09:00 AM',
+    priority: 'High',
+    status: 'To Do'
+  },
+  {
+    id: 'task-2',
+    caseId: 'case-102',
+    caseName: 'Robert James Harrison',
+    title: 'Schedule Cremation Slot',
+    assignedStaffName: 'Elena Rostova',
+    dueDate: '2026-07-29',
+    dueTime: '10:00 AM',
+    priority: 'Medium',
+    status: 'In Progress'
+  }
+];
+
+const INITIAL_DOCS: CaseDocument[] = [
+  {
+    id: 'doc-1',
+    caseId: 'case-101',
+    caseName: 'Eleanor Vance Sterling',
+    name: 'Death_Certificate_Sterling.pdf',
+    category: 'Death Certificates',
+    size: '342 KB',
+    uploadDate: '2026-07-25',
+    fileType: 'pdf'
+  },
+  {
+    id: 'doc-2',
+    caseId: 'case-102',
+    caseName: 'Robert James Harrison',
+    name: 'Cremation_Auth_Form_Signed.pdf',
+    category: 'Contracts',
+    size: '890 KB',
+    uploadDate: '2026-07-26',
+    fileType: 'pdf'
+  }
+];
+
+const INITIAL_NOTES: CaseNote[] = [
+  {
+    id: 'note-1',
+    caseId: 'case-101',
+    author: 'Marcus Vance',
+    avatar: 'MV',
+    date: '2026-07-25',
+    time: '11:00 AM',
+    text: 'Family requested specific piano music selection for the entrance.'
+  }
+];
+
+const INITIAL_FAMILIES: Family[] = [
+  {
+    id: 'fam-101',
+    name: 'Arthur Sterling',
+    relationship: 'Son',
+    phone: '020-555-0192',
+    email: 'arthur.sterling@example.com',
+    address: '1420 Highland Dr, London, SW11',
+    linkedCases: [
+      { caseId: 'case-101', deceasedName: 'Eleanor Vance Sterling', caseNumber: 'FHC-2026-8451' }
+    ],
+    lastActivity: '2026-07-25 (Case Created)',
+    notes: 'Prefers WhatsApp messaging. Son of late Eleanor.'
+  },
+  {
+    id: 'fam-102',
+    name: 'Margaret Harrison',
+    relationship: 'Spouse',
+    phone: '0121-555-0144',
+    email: 'margaret.harrison@example.com',
+    address: '89 West Boulevard, Birmingham, B32',
+    linkedCases: [
+      { caseId: 'case-102', deceasedName: 'Robert James Harrison', caseNumber: 'FHC-2026-3842' }
+    ],
+    lastActivity: '2026-07-26 (Case Created)',
+    notes: 'Primary contact for husband Robert Harrison.'
+  },
+  {
+    id: 'fam-103',
+    name: 'Clara Montgomery',
+    relationship: 'Daughter',
+    phone: '0161-555-0873',
+    email: 'clara.m@example.com',
+    address: '12 Oak Lane, Manchester, M14',
+    linkedCases: [
+      { caseId: 'case-103', deceasedName: 'Harold Montgomery', caseNumber: 'FHC-2026-7281' }
+    ],
+    lastActivity: '2026-07-24 (Case Created)',
+    notes: 'Awaiting flower selections update.'
+  },
+  {
+    id: 'fam-104',
+    name: 'Thomas Davies',
+    relationship: 'Son',
+    phone: '0131-555-0921',
+    email: 't.davies@example.com',
+    address: '4 Dean Terrace, Edinburgh, EH4',
+    linkedCases: [
+      { caseId: 'case-104', deceasedName: 'Gwyneth Davies', caseNumber: 'FHC-2026-5821' }
+    ],
+    lastActivity: '2026-07-23 (Case Completed)',
+    notes: 'Account settled in full.'
+  },
+  {
+    id: 'fam-105',
+    name: 'Priyesh Patel',
+    relationship: 'Son',
+    phone: '0113-555-0382',
+    email: 'p.patel@example.com',
+    address: '15 Roundhay Road, Leeds, LS8',
+    linkedCases: [
+      { caseId: 'case-105', deceasedName: 'Devendra Patel', caseNumber: 'FHC-2026-9192' }
+    ],
+    lastActivity: '2026-07-27 (Case Created)',
+    notes: 'Traditional cremation services.'
+  }
+];
+
+const INITIAL_CALENDAR: CalendarEvent[] = [
+  {
+    id: 'cal-101',
+    title: 'Funeral: Devendra Patel',
+    caseId: 'case-105',
+    caseNumber: 'FHC-2026-9192',
+    deceasedName: 'Devendra Patel',
+    startDate: '2026-07-27',
+    startTime: '11:00 AM',
+    endTime: '12:30 PM',
+    type: 'Funeral',
+    location: 'Main Chapel - Grace Memorial',
+    staffName: 'Marcus Vance'
+  },
+  {
+    id: 'cal-102',
+    title: 'Viewing: Eleanor Vance Sterling',
+    caseId: 'case-101',
+    caseNumber: 'FHC-2026-8451',
+    deceasedName: 'Eleanor Vance Sterling',
+    startDate: '2026-07-27',
+    startTime: '04:00 PM',
+    endTime: '06:00 PM',
+    type: 'Viewing',
+    location: 'Reposing Suite A',
+    staffName: 'Sarah Thompson'
+  },
+  {
+    id: 'cal-103',
+    title: 'Family Meeting: Harrison Family',
+    caseId: 'case-102',
+    caseNumber: 'FHC-2026-3842',
+    deceasedName: 'Robert James Harrison',
+    startDate: '2026-07-28',
+    startTime: '09:30 AM',
+    endTime: '11:00 AM',
+    type: 'Family Meeting',
+    location: 'Arrangement Room 1',
+    staffName: 'Elena Rostova'
+  },
+  {
+    id: 'cal-104',
+    title: 'Funeral: Harold Montgomery',
+    caseId: 'case-103',
+    caseNumber: 'FHC-2026-7281',
+    deceasedName: 'Harold Montgomery',
+    startDate: '2026-07-30',
+    startTime: '01:00 PM',
+    endTime: '03:00 PM',
+    type: 'Funeral',
+    location: 'Greenwood Woodland Chapel',
+    staffName: 'Marcus Vance'
+  }
+];
+
+const INITIAL_INVOICES: Invoice[] = [
+  {
+    id: 'inv-101',
+    invoiceNumber: 'INV-2026-101',
+    familyId: 'fam-101',
+    familyName: 'Arthur Sterling',
+    caseId: 'case-101',
+    caseNumber: 'FHC-2026-8451',
+    deceasedName: 'Eleanor Vance Sterling',
+    items: [
+      { id: 'item-1', description: 'Professional Funeral Services Fee', quantity: 1, unitPrice: 3500, total: 3500 },
+      { id: 'item-2', description: 'Grace Memorial Main Chapel Rental', quantity: 1, unitPrice: 1500, total: 1500 },
+      { id: 'item-3', description: 'Mercedes Hearse & Limousine Transport', quantity: 1, unitPrice: 1500, total: 1500 },
+      { id: 'item-4', description: 'Coffin selection - Solid Oak wood', quantity: 1, unitPrice: 1000, total: 1000 }
+    ],
+    totalAmount: 7500,
+    paidAmount: 5000,
+    dueDate: '2026-08-05',
+    issueDate: '2026-07-25',
+    status: 'Pending'
+  },
+  {
+    id: 'inv-102',
+    invoiceNumber: 'INV-2026-102',
+    familyId: 'fam-102',
+    familyName: 'Margaret Harrison',
+    caseId: 'case-102',
+    caseNumber: 'FHC-2026-3842',
+    deceasedName: 'Robert James Harrison',
+    items: [
+      { id: 'item-1', description: 'Direct Cremation Package', quantity: 1, unitPrice: 2800, total: 2800 },
+      { id: 'item-2', description: 'Standard Eco Ash Urn casket', quantity: 1, unitPrice: 700, total: 700 }
+    ],
+    totalAmount: 3500,
+    paidAmount: 0,
+    dueDate: '2026-08-10',
+    issueDate: '2026-07-26',
+    status: 'Pending'
+  },
+  {
+    id: 'inv-103',
+    invoiceNumber: 'INV-2026-103',
+    familyId: 'fam-103',
+    familyName: 'Clara Montgomery',
+    caseId: 'case-103',
+    caseNumber: 'FHC-2026-7281',
+    deceasedName: 'Harold Montgomery',
+    items: [
+      { id: 'item-1', description: 'Memorial Chapel Service Package', quantity: 1, unitPrice: 4200, total: 4200 },
+      { id: 'item-2', description: 'Flower arrangements - Roses & Lilies', quantity: 1, unitPrice: 1200, total: 1200 }
+    ],
+    totalAmount: 5400,
+    paidAmount: 2000,
+    dueDate: '2026-08-02',
+    issueDate: '2026-07-24',
+    status: 'Pending'
+  },
+  {
+    id: 'inv-104',
+    invoiceNumber: 'INV-2026-104',
+    familyId: 'fam-104',
+    familyName: 'Thomas Davies',
+    caseId: 'case-104',
+    caseNumber: 'FHC-2026-5821',
+    deceasedName: 'Gwyneth Davies',
+    items: [
+      { id: 'item-1', description: 'Traditional Graveside Burial arrangement', quantity: 1, unitPrice: 4800, total: 4800 },
+      { id: 'item-2', description: 'Cemetery plots reservation & digging', quantity: 1, unitPrice: 2000, total: 2000 }
+    ],
+    totalAmount: 6800,
+    paidAmount: 6800,
+    dueDate: '2026-07-26',
+    issueDate: '2026-07-23',
+    status: 'Paid'
+  },
+  {
+    id: 'inv-105',
+    invoiceNumber: 'INV-2026-105',
+    familyId: 'fam-105',
+    familyName: 'Priyesh Patel',
+    caseId: 'case-105',
+    caseNumber: 'FHC-2026-9192',
+    deceasedName: 'Devendra Patel',
+    items: [
+      { id: 'item-1', description: 'Traditional Asian Funeral Cremation rites', quantity: 1, unitPrice: 5200, total: 5200 },
+      { id: 'item-2', description: 'Crematorium rental & ash retrieval', quantity: 1, unitPrice: 3000, total: 3000 }
+    ],
+    totalAmount: 8200,
+    paidAmount: 8200,
+    dueDate: '2026-07-27',
+    issueDate: '2026-07-27',
+    status: 'Paid'
+  },
+  {
+    id: 'inv-106',
+    invoiceNumber: 'INV-2026-106',
+    familyId: 'fam-101',
+    familyName: 'Arthur Sterling',
+    caseId: 'case-101',
+    caseNumber: 'FHC-2026-8451',
+    deceasedName: 'Eleanor Vance Sterling',
+    items: [
+      { id: 'item-1', description: 'Overdue service deposit surcharge', quantity: 1, unitPrice: 1200, total: 1200 }
+    ],
+    totalAmount: 1200,
+    paidAmount: 0,
+    dueDate: '2026-07-17',
+    issueDate: '2026-07-10',
+    status: 'Overdue'
+  }
+];
+
+const INITIAL_VEHICLES: Vehicle[] = [
+  {
+    id: 'veh-1',
+    name: 'Mercedes-Benz E-Class Hearse',
+    registrationNumber: 'EX26 WRN',
+    type: 'Hearse',
+    photo: 'H1',
+    driverName: 'James Wilson',
+    status: 'Available',
+    nextMaintenanceDate: '2026-09-12',
+    mileage: '12,450 mi'
+  },
+  {
+    id: 'veh-2',
+    name: 'Jaguar XJ Limousine',
+    registrationNumber: 'EX26 YKM',
+    type: 'Limousine',
+    photo: 'L1',
+    driverName: 'James Wilson',
+    status: 'In Service',
+    nextMaintenanceDate: '2026-10-05',
+    mileage: '8,900 mi'
+  },
+  {
+    id: 'veh-3',
+    name: 'Ford Transit Transfer Van',
+    registrationNumber: 'EX26 TYN',
+    type: 'Transfer Van',
+    photo: 'V1',
+    driverName: 'James Wilson',
+    status: 'Available',
+    nextMaintenanceDate: '2026-08-20',
+    mileage: '24,600 mi'
+  }
+];
+
+const INITIAL_INVENTORY: InventoryItem[] = [
+  {
+    id: 'inv-item-1',
+    name: 'Solid English Oak Casket',
+    category: 'Caskets',
+    stock: 5,
+    lowStockAlert: 2,
+    purchasePrice: 400,
+    sellingPrice: 1000,
+    supplier: 'British Caskets Ltd',
+    location: 'Storage Room A'
+  },
+  {
+    id: 'inv-item-2',
+    name: 'Polished Brass Urn',
+    category: 'Urns',
+    stock: 12,
+    lowStockAlert: 4,
+    purchasePrice: 80,
+    sellingPrice: 220,
+    supplier: 'Legacy Urns',
+    location: 'Storage Room B'
+  }
+];
+
+const INITIAL_STAFF: StaffMember[] = [
+  {
+    id: 'staff-1',
+    name: 'Marcus Vance',
+    position: 'Senior Funeral Director',
+    role: 'Funeral Director',
+    email: 'm.vance@evergreen.co.uk',
+    phone: '020-555-0101',
+    status: 'Active',
+    photo: 'MV',
+    activeCasesCount: 3
+  },
+  {
+    id: 'staff-2',
+    name: 'Elena Rostova',
+    position: 'Funeral Director',
+    role: 'Funeral Director',
+    email: 'e.rostova@evergreen.co.uk',
+    phone: '020-555-0102',
+    status: 'Active',
+    photo: 'ER',
+    activeCasesCount: 1
+  },
+  {
+    id: 'staff-3',
+    name: 'David Martinez',
+    position: 'Lead Embalmer',
+    role: 'Funeral Director',
+    email: 'd.martinez@evergreen.co.uk',
+    phone: '020-555-0103',
+    status: 'Active',
+    photo: 'DM',
+    activeCasesCount: 1
+  },
+  {
+    id: 'staff-4',
+    name: 'Sarah Thompson',
+    position: 'Family Support Specialist',
+    role: 'Office Staff',
+    email: 's.thompson@evergreen.co.uk',
+    phone: '020-555-0104',
+    status: 'Active',
+    photo: 'ST',
+    activeCasesCount: 0
+  },
+  {
+    id: 'staff-5',
+    name: 'Lisa Brown',
+    position: 'Office Administrator',
+    role: 'Office Staff',
+    email: 'l.brown@evergreen.co.uk',
+    phone: '020-555-0105',
+    status: 'Active',
+    photo: 'LB',
+    activeCasesCount: 0
+  },
+  {
+    id: 'staff-6',
+    name: 'James Wilson',
+    position: 'Lead Hearse Driver',
+    role: 'Driver',
+    email: 'j.wilson@evergreen.co.uk',
+    phone: '020-555-0106',
+    status: 'Active',
+    photo: 'JW',
+    activeCasesCount: 0
+  }
+];
+
+const INITIAL_NOTIFICATIONS: AppNotification[] = [
+  {
+    id: 'notif-1',
+    title: 'New Funeral Case Initiated',
+    message: 'Case #FHC-2026-9192 created for Devendra Patel',
+    timestamp: 'Today, 11:00 AM',
+    read: false,
+    type: 'success',
+    linkModule: 'Cases',
+    linkId: 'case-105'
+  },
+  {
+    id: 'notif-2',
+    title: 'WhatsApp Message Received',
+    message: 'New message from Clara Montgomery (Montgomery Family)',
+    timestamp: 'Today, 09:15 AM',
+    read: false,
+    type: 'info',
+    linkModule: 'Communications',
+    linkId: 'conv-103'
+  },
+  {
+    id: 'notif-3',
+    title: 'Invoice Overdue Surcharge',
+    message: 'Invoice INV-2026-106 is overdue by 10 days.',
+    timestamp: 'Yesterday',
+    read: false,
+    type: 'warning',
+    linkModule: 'Financials',
+    linkId: 'inv-106'
+  }
+];
 
 const INITIAL_SETTINGS: CompanySettings = {
   companyName: 'Evergreen Funeral Directors & Mortuary',
   tagline: 'Dignified & Compassionate Care Since 1994',
   logoText: 'EVERGREEN',
-  address: '1200 Grand View Boulevard, Seattle, WA 98101',
-  phone: '(206) 555-0100',
-  email: 'care@evergreenfuneral.com',
-  website: 'https://evergreenfuneral.com',
-  taxId: 'TAX-99482-WA',
-  currency: 'USD ($)',
-  timeZone: 'America/Los_Angeles (PST)',
+  address: '1200 Grand View Boulevard, London, SW1',
+  phone: '020-555-0100',
+  email: 'care@evergreen.co.uk',
+  website: 'https://evergreen.co.uk',
+  taxId: 'TAX-99482-UK',
+  currency: 'GBP (£)',
+  timeZone: 'Europe/London (BST)',
   primaryColor: '#7A9073',
-  taxRate: 9.8
+  taxRate: 20.0
 };
 
 export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -225,7 +931,7 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Conversations & Messages State
   const [conversations, setConversations] = useState<Conversation[]>(INITIAL_CONVERSATIONS);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(INITIAL_CHAT_MESSAGES);
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>('conv-101');
 
   // Entities State
   const [cases, setCases] = useState<Case[]>(INITIAL_CASES);
