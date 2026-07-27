@@ -507,3 +507,24 @@ h4 { font-size: 14px; line-height: 20px; }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
+
+/* Clickable Dashboard Item hover animations */
+.clickable-card {
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease !important;
+}
+.clickable-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--primary-border) !important;
+  opacity: 0.95;
+}
+.clickable-item {
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease !important;
+}
+.clickable-item:hover {
+  background-color: var(--bg-subtle) !important;
+  opacity: 0.9;
+}
+

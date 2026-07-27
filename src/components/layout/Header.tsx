@@ -4,7 +4,7 @@ import { Search, Plus, Bell, Mail, HelpCircle } from 'lucide-react';
 import { NotificationPopover } from '../common/NotificationPopover';
 
 export const Header: React.FC = () => {
-  const { searchQuery, setSearchQuery, setIsCreateCaseModalOpen } = useCRM();
+  const { searchQuery, setSearchQuery, setIsCreateCaseModalOpen, setCurrentModule } = useCRM();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
 
   return (
@@ -133,6 +133,7 @@ export const Header: React.FC = () => {
         {/* Mail with badge 4 */}
         <div style={{ position: 'relative' }}>
           <button
+            onClick={() => setCurrentModule('Communications')}
             style={{
               background: 'none',
               border: 'none',

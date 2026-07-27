@@ -104,7 +104,11 @@ export const DashboardView: React.FC = () => {
       {/* 2. TOP 4 HERO METRIC CARDS ROW */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', flexShrink: 0 }}>
         {/* Metric 1: Active Cases */}
-        <div className="card" style={{ padding: '14px 18px', display: 'flex', gap: '14px', alignItems: 'center' }}>
+        <div 
+          className="card clickable-card" 
+          onClick={() => setCurrentModule('Cases')}
+          style={{ padding: '14px 18px', display: 'flex', gap: '14px', alignItems: 'center' }}
+        >
           <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#e2e8f0', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <Folder size={18} />
           </div>
@@ -118,7 +122,11 @@ export const DashboardView: React.FC = () => {
         </div>
 
         {/* Metric 2: Today's Services */}
-        <div className="card" style={{ padding: '14px 18px', display: 'flex', gap: '14px', alignItems: 'center' }}>
+        <div 
+          className="card clickable-card" 
+          onClick={() => setCurrentModule('Calendar')}
+          style={{ padding: '14px 18px', display: 'flex', gap: '14px', alignItems: 'center' }}
+        >
           <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#fef3c7', color: '#b45309', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <Calendar size={18} />
           </div>
@@ -132,7 +140,11 @@ export const DashboardView: React.FC = () => {
         </div>
 
         {/* Metric 3: Families Care */}
-        <div className="card" style={{ padding: '14px 18px', display: 'flex', gap: '14px', alignItems: 'center' }}>
+        <div 
+          className="card clickable-card" 
+          onClick={() => setCurrentModule('Families')}
+          style={{ padding: '14px 18px', display: 'flex', gap: '14px', alignItems: 'center' }}
+        >
           <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#f1f5f9', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <Users size={18} />
           </div>
@@ -146,7 +158,11 @@ export const DashboardView: React.FC = () => {
         </div>
 
         {/* Metric 4: Revenue (This Month) */}
-        <div className="card" style={{ padding: '14px 18px', display: 'flex', gap: '14px', alignItems: 'center' }}>
+        <div 
+          className="card clickable-card" 
+          onClick={() => setCurrentModule('Financials')}
+          style={{ padding: '14px 18px', display: 'flex', gap: '14px', alignItems: 'center' }}
+        >
           <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#064e3b', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '15px', flexShrink: 0 }}>
             £
           </div>
@@ -198,7 +214,12 @@ export const DashboardView: React.FC = () => {
                 { time: '03:00 PM', title: 'Transfer', desc: 'From City Hospital', icon: <Clock size={12} /> },
                 { time: '05:00 PM', title: 'Family Meeting', desc: 'Brown Family', icon: <Users size={12} /> }
               ].map((item, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative' }}>
+                <div 
+                  key={idx} 
+                  onClick={() => setCurrentModule('Calendar')}
+                  className="clickable-item"
+                  style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative', padding: '4px 8px', borderRadius: '6px' }}
+                >
                   {/* Time label */}
                   <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', width: '56px', flexShrink: 0 }}>
                     {item.time}
@@ -239,7 +260,11 @@ export const DashboardView: React.FC = () => {
           <div className="card" style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', height: 'fit-content' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
               <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0 }}>Case Progress Overview</h3>
-              <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--primary-accent)', backgroundColor: 'var(--primary-light)', padding: '2px 8px', borderRadius: '4px' }}>
+              <span 
+                className="clickable-item"
+                onClick={() => setCurrentModule('Cases')}
+                style={{ fontSize: '10px', fontWeight: 700, color: 'var(--primary-accent)', backgroundColor: 'var(--primary-light)', padding: '2px 8px', borderRadius: '4px' }}
+              >
                 75 Total Cases
               </span>
             </div>
@@ -255,7 +280,12 @@ export const DashboardView: React.FC = () => {
                 { step: 'Funeral', val: '10', icon: <ChristianCrossIcon /> },
                 { step: 'Aftercare', val: '12', icon: <Heart size={14} /> }
               ].map((step, idx) => (
-                <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', zIndex: 5, position: 'relative' }}>
+                <div 
+                  key={idx} 
+                  onClick={() => setCurrentModule('Cases')}
+                  className="clickable-item"
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', zIndex: 5, position: 'relative', padding: '4px', borderRadius: '6px' }}
+                >
                   <div style={{
                     width: '32px',
                     height: '32px',
@@ -303,12 +333,17 @@ export const DashboardView: React.FC = () => {
               </div>
 
               {[
-                { title: 'Johnson Family document signatures pending', sub: '2 documents pending' },
-                { title: 'Smith Family obituary needs approval', sub: 'Created 2 hours ago' },
-                { title: '2 invoices are currently unpaid', sub: 'Total £4,250 outstanding' },
-                { title: 'Staff conflict detected for tomorrow', sub: '2 scheduling conflicts' }
+                { title: 'Johnson Family document signatures pending', sub: '2 documents pending', target: 'Documents' },
+                { title: 'Smith Family obituary needs approval', sub: 'Created 2 hours ago', target: 'AI Assistant' },
+                { title: '2 invoices are currently unpaid', sub: 'Total £4,250 outstanding', target: 'Financials' },
+                { title: 'Staff conflict detected for tomorrow', sub: '2 scheduling conflicts', target: 'Staff & Resources' }
               ].map((item, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '6px' }}>
+                <div 
+                  key={idx} 
+                  onClick={() => setCurrentModule(item.target as any)}
+                  className="clickable-item"
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '6px' }}
+                >
                   <div>
                     <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.2 }}>{item.title}</div>
                     <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>{item.sub}</div>
@@ -328,7 +363,11 @@ export const DashboardView: React.FC = () => {
           </div>
 
           {/* Revenue Overview Card */}
-          <div className="card" style={{ display: 'flex', flexDirection: 'column', flex: 0.9, minHeight: 0, padding: '14px 16px' }}>
+          <div 
+            className="card clickable-card" 
+            onClick={() => setCurrentModule('Financials')}
+            style={{ display: 'flex', flexDirection: 'column', flex: 0.9, minHeight: 0, padding: '14px 16px' }}
+          >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexShrink: 0 }}>
               <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0 }}>Revenue Overview</h3>
               <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>May 1 - May 31</span>
@@ -367,9 +406,22 @@ export const DashboardView: React.FC = () => {
           
           {/* Communications Today Card */}
           <div className="card" style={{ padding: '14px 16px', flexShrink: 0 }}>
-            <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0, marginBottom: '10px' }}>Communications (Today)</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0 }}>Communications (Today)</h3>
+              <button 
+                className="btn btn-secondary btn-sm" 
+                style={{ padding: '2px 6px', fontSize: '9px' }}
+                onClick={() => setCurrentModule('Communications')}
+              >
+                View All
+              </button>
+            </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-              <div style={{ padding: '8px 10px', backgroundColor: 'var(--status-urgent-bg)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div 
+                onClick={() => setCurrentModule('Communications')}
+                className="clickable-item"
+                style={{ padding: '8px 10px', backgroundColor: 'var(--status-urgent-bg)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
                 <Phone size={14} style={{ color: 'var(--status-urgent-text)' }} />
                 <div>
                   <div style={{ fontSize: '9px', color: 'var(--status-urgent-text)', fontWeight: 600 }}>Calls</div>
@@ -377,7 +429,11 @@ export const DashboardView: React.FC = () => {
                 </div>
               </div>
 
-              <div style={{ padding: '8px 10px', backgroundColor: 'var(--status-scheduled-bg)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div 
+                onClick={() => setCurrentModule('Communications')}
+                className="clickable-item"
+                style={{ padding: '8px 10px', backgroundColor: 'var(--status-scheduled-bg)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
                 <MessageSquare size={14} style={{ color: 'var(--status-scheduled-text)' }} />
                 <div>
                   <div style={{ fontSize: '9px', color: 'var(--status-scheduled-text)', fontWeight: 600 }}>Texts</div>
@@ -385,7 +441,11 @@ export const DashboardView: React.FC = () => {
                 </div>
               </div>
 
-              <div style={{ padding: '8px 10px', backgroundColor: 'var(--status-active-bg)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div 
+                onClick={() => setCurrentModule('Communications')}
+                className="clickable-item"
+                style={{ padding: '8px 10px', backgroundColor: 'var(--status-active-bg)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
                 <WhatsAppIcon size={14} style={{ color: 'var(--status-active-text)' }} />
                 <div>
                   <div style={{ fontSize: '9px', color: 'var(--status-active-text)', fontWeight: 600 }}>WhatsApp</div>
@@ -393,7 +453,11 @@ export const DashboardView: React.FC = () => {
                 </div>
               </div>
 
-              <div style={{ padding: '8px 10px', backgroundColor: 'var(--status-transit-bg)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div 
+                onClick={() => setCurrentModule('Communications')}
+                className="clickable-item"
+                style={{ padding: '8px 10px', backgroundColor: 'var(--status-transit-bg)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
                 <Mail size={14} style={{ color: 'var(--status-transit-text)' }} />
                 <div>
                   <div style={{ fontSize: '9px', color: 'var(--status-transit-text)', fontWeight: 600 }}>Emails</div>
@@ -408,12 +472,17 @@ export const DashboardView: React.FC = () => {
             <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0, marginBottom: '10px', flexShrink: 0 }}>Recent Activity</h3>
             <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {[
-                { title: 'New case created', desc: 'Margaret Johnson', time: '2 min ago' },
-                { title: 'Document uploaded', desc: 'Death Certificate - Williams Family', time: '15 min ago' },
-                { title: 'New message received', desc: 'From Davis Family', time: '30 min ago' },
-                { title: 'Payment received', desc: 'Williams Family - £2,500', time: '1 hr ago' }
+                { title: 'New case created', desc: 'Margaret Johnson', time: '2 min ago', target: 'Cases' },
+                { title: 'Document uploaded', desc: 'Death Certificate - Williams Family', time: '15 min ago', target: 'Documents' },
+                { title: 'New message received', desc: 'From Davis Family', time: '30 min ago', target: 'Communications' },
+                { title: 'Payment received', desc: 'Williams Family - £2,500', time: '1 hr ago', target: 'Financials' }
               ].map((activity, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', fontSize: '11px', borderBottom: '1px solid var(--border-light)', paddingBottom: '6px' }}>
+                <div 
+                  key={idx} 
+                  onClick={() => setCurrentModule(activity.target as any)}
+                  className="clickable-item"
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', fontSize: '11px', borderBottom: '1px solid var(--border-light)', padding: '4px 8px', borderRadius: '6px' }}
+                >
                   <div>
                     <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{activity.title}</div>
                     <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '1px' }}>{activity.desc}</div>
@@ -426,7 +495,16 @@ export const DashboardView: React.FC = () => {
 
           {/* Staff On Duty Card */}
           <div className="card" style={{ padding: '14px 16px', flexShrink: 0 }}>
-            <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0, marginBottom: '10px' }}>Staff On Duty</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0 }}>Staff On Duty</h3>
+              <button 
+                className="btn btn-secondary btn-sm" 
+                style={{ padding: '2px 6px', fontSize: '9px' }}
+                onClick={() => setCurrentModule('Staff & Resources')}
+              >
+                View All
+              </button>
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[
                 { name: 'James Wilson', role: 'Funeral Director' },
@@ -434,7 +512,12 @@ export const DashboardView: React.FC = () => {
                 { name: 'David Martinez', role: 'Embalmer' },
                 { name: 'Lisa Brown', role: 'Administrator' }
               ].map((staff, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px' }}>
+                <div 
+                  key={idx} 
+                  onClick={() => setCurrentModule('Staff & Resources')}
+                  className="clickable-item"
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', padding: '4px 8px', borderRadius: '6px' }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div style={{
                       width: '24px',
