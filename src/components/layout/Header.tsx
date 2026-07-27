@@ -4,8 +4,11 @@ import { Search, Plus, Bell, Mail, HelpCircle } from 'lucide-react';
 import { NotificationPopover } from '../common/NotificationPopover';
 
 export const Header: React.FC = () => {
-  const { searchQuery, setSearchQuery, setIsCreateCaseModalOpen, setCurrentModule } = useCRM();
+  const { searchQuery, setSearchQuery, setIsCreateCaseModalOpen, setCurrentModule, notifications, conversations } = useCRM();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+
+  const unreadNotificationsCount = notifications.filter(n => !n.read).length;
+  const unreadMessagesCount = conversations.reduce((sum, c) => sum + c.unreadCount, 0);
 
   return (
     <header
@@ -91,7 +94,7 @@ export const Header: React.FC = () => {
           <Plus size={16} />
         </button>
 
-        {/* Bell with badge 8 */}
+        {/* Bell with badge */}
         <div style={{ position: 'relative' }}>
           <button
             onClick={() => setIsNotifOpen(prev => !prev)}
@@ -109,28 +112,30 @@ export const Header: React.FC = () => {
           >
             <Bell size={20} />
           </button>
-          <span
-            style={{
-              position: 'absolute',
-              top: '-2px',
-              right: '-2px',
-              width: '14px',
-              height: '14px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--status-urgent-text)',
-              color: '#ffffff',
-              fontSize: '9px',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            8
-          </span>
+          {unreadNotificationsCount > 0 && (
+            <span
+              style={{
+                position: 'absolute',
+                top: '-2px',
+                right: '-2px',
+                width: '14px',
+                height: '14px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--status-urgent-text)',
+                color: '#ffffff',
+                fontSize: '9px',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {unreadNotificationsCount}
+            </span>
+          )}
         </div>
 
-        {/* Mail with badge 4 */}
+        {/* Mail with badge */}
         <div style={{ position: 'relative' }}>
           <button
             onClick={() => setCurrentModule('Communications')}
@@ -148,25 +153,27 @@ export const Header: React.FC = () => {
           >
             <Mail size={20} />
           </button>
-          <span
-            style={{
-              position: 'absolute',
-              top: '-2px',
-              right: '-2px',
-              width: '14px',
-              height: '14px',
-              borderRadius: '50%',
-              backgroundColor: '#3b82f6',
-              color: '#ffffff',
-              fontSize: '9px',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            4
-          </span>
+          {unreadMessagesCount > 0 && (
+            <span
+              style={{
+                position: 'absolute',
+                top: '-2px',
+                right: '-2px',
+                width: '14px',
+                height: '14px',
+                borderRadius: '50%',
+                backgroundColor: '#3b82f6',
+                color: '#ffffff',
+                fontSize: '9px',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {unreadMessagesCount}
+            </span>
+          )}
         </div>
 
         {/* Help icon */}
