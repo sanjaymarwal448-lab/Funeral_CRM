@@ -391,6 +391,7 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           };
 
           setCases(prev => [newCase, ...prev]);
+          linkOrCreateFamilyForCase(newCase, newCaseNum);
           setConversations(prev => prev.map(c => c.id === targetConv!.id ? { ...c, caseId: newCase.id, caseNumber: newCaseNum, deceasedName: newCase.deceasedName } : c));
           addToast(`🤖 AI Auto-Intake: Created Draft Funeral Case #${newCaseNum}!`, 'success');
           addNotification('AI Case Auto-Intake', `Draft case #${newCaseNum} created for ${newCase.deceasedName} from WhatsApp intake`, 'success', 'Cases', newCase.id);
@@ -507,6 +508,50 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addToast(`Assigned conversation to ${staffName}`);
   };
 
+  const linkOrCreateFamilyForCase = (newCase: Case, caseNumber: string) => {
+    const contactName = newCase.primaryContactName;
+    const contactEmail = newCase.email;
+    const contactPhone = newCase.phone;
+    const contactRel = newCase.relationship;
+
+    if (contactName) {
+      setFamilies(prev => {
+        const existingFamilyIndex = prev.findIndex(f => 
+          (contactEmail && f.email === contactEmail) || 
+          (contactPhone && f.phone === contactPhone) ||
+          (f.name.toLowerCase().includes(contactName.toLowerCase()))
+        );
+
+        if (existingFamilyIndex !== -1) {
+          const updated = [...prev];
+          const fam = { ...updated[existingFamilyIndex] };
+          const alreadyLinked = fam.linkedCases.some(lc => lc.caseId === newCase.id);
+          if (!alreadyLinked) {
+            fam.linkedCases = [...fam.linkedCases, { caseId: newCase.id, deceasedName: newCase.deceasedName, caseNumber }];
+          }
+          fam.lastActivity = `${newCase.createdAt} (Case Created)`;
+          if (!fam.phone && contactPhone) fam.phone = contactPhone;
+          if (!fam.email && contactEmail) fam.email = contactEmail;
+          updated[existingFamilyIndex] = fam;
+          return updated;
+        } else {
+          const newFamily: Family = {
+            id: newCase.primaryContactId || `fam-${Date.now()}`,
+            name: contactName,
+            relationship: contactRel,
+            phone: contactPhone || '',
+            email: contactEmail || '',
+            address: newCase.location || '',
+            linkedCases: [{ caseId: newCase.id, deceasedName: newCase.deceasedName, caseNumber }],
+            lastActivity: `${newCase.createdAt} (Case Created)`,
+            notes: `Primary contact for case of ${newCase.deceasedName}.`
+          };
+          return [newFamily, ...prev];
+        }
+      });
+    }
+  };
+
   // CASES CRUD
   const addCase = (newCaseData: Omit<Case, 'id' | 'caseNumber' | 'createdAt' | 'notesCount' | 'docsCount'>) => {
     const id = `case-${Date.now()}`;
@@ -520,6 +565,9 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       docsCount: 0
     };
     setCases(prev => [newCase, ...prev]);
+
+    // Automatically link or create Family profile
+    linkOrCreateFamilyForCase(newCase, caseNumber);
 
     const tlEvent: CaseTimelineEvent = {
       id: `tl-${Date.now()}`,
@@ -576,6 +624,7 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       createdAt: new Date().toISOString().split('T')[0]
     };
     setCases(prev => [copy, ...prev]);
+    linkOrCreateFamilyForCase(copy, newNum);
     addToast(`Duplicated case #${newNum} created.`);
   };
 
