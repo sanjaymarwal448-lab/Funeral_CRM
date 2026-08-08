@@ -33,7 +33,7 @@ export const Header: React.FC = () => {
           <input
             type="text"
             className="input-field"
-            placeholder="Search anything... (e.g. Cases, Families, Documents)"
+            placeholder="Search cases, families, docs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{

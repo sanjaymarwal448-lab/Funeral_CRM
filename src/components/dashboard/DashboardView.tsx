@@ -195,8 +195,8 @@ export const DashboardView: React.FC = () => {
           <div>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>Active Cases</div>
             <div style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-main)', marginTop: '2px', lineHeight: 1.1 }}>{activeCasesCount}</div>
-            <div style={{ fontSize: '10px', color: 'var(--status-active-text)', fontWeight: 600, marginTop: '2px' }}>
-              ↑ Active files in CRM
+            <div style={{ fontSize: '10px', color: 'var(--text-body)', fontWeight: 500, marginTop: '2px', whiteSpace: 'nowrap' }}>
+              {arrangementsCount} Arrangements • {todaysServicesCount} Services Today
             </div>
           </div>
         </div>
@@ -214,7 +214,7 @@ export const DashboardView: React.FC = () => {
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>Today's Services</div>
             <div style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-main)', marginTop: '2px', lineHeight: 1.1 }}>{todaysServicesCount}</div>
             <div style={{ fontSize: '10px', color: 'var(--text-body)', fontWeight: 500, marginTop: '2px', whiteSpace: 'nowrap' }}>
-              {arrangementsCount} Arrangements • {viewingsCount} Viewings • {othersCount} Others
+              {viewingsCount} Viewings • {othersCount} Funerals
             </div>
           </div>
         </div>
@@ -583,8 +583,8 @@ export const DashboardView: React.FC = () => {
           </div>
 
           {/* Staff On Duty Card */}
-          <div className="card" style={{ padding: '14px 16px', flexShrink: 0 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+          <div className="card" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: '14px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexShrink: 0 }}>
               <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0 }}>Staff On Duty</h3>
               <button 
                 className="btn btn-secondary btn-sm" 
@@ -594,7 +594,7 @@ export const DashboardView: React.FC = () => {
                 View All
               </button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '6px' }}>
               {activeStaff.length === 0 ? (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '12px 0', fontSize: '11px', color: 'var(--text-muted)' }}>
                   No staff currently logged as active.
