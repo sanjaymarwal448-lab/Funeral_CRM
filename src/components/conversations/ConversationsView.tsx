@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useCRM } from '../../context/CRMContext';
 import { Conversation, ChatMessage, CommunicationChannel, ConversationStatus } from '../../types/crm';
 import { WhatsAppSimulator } from './WhatsAppSimulator';
@@ -47,6 +47,8 @@ export const ConversationsView: React.FC = () => {
     whatsAppSettings
   } = useCRM();
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   // Filters State
   const [filterChannel, setFilterChannel] = useState<string>('ALL');
   const [filterSearch, setFilterSearch] = useState<string>('');
@@ -69,6 +71,10 @@ export const ConversationsView: React.FC = () => {
     if (!activeConv) return [];
     return chatMessages.filter(m => m.conversationId === activeConv.id);
   }, [chatMessages, activeConv]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [activeMessages]);
 
   // Filtered Conversations List
   const filteredConversations = useMemo(() => {
@@ -296,36 +302,49 @@ export const ConversationsView: React.FC = () => {
         <div className="card" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {/* Thread Header */}
           <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'var(--bg-subtle)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--primary-accent)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '15px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+              <div style={{
+                width: '42px',
+                height: '42px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, var(--primary-accent) 0%, #5d6f56 100%)',
+                color: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 700,
+                fontSize: '16px',
+                boxShadow: 'var(--shadow-sm)',
+                flexShrink: 0
+              }}>
                 {activeConv.familyName.charAt(0)}
               </div>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-main)' }}>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-main)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {activeConv.familyName}
                   </h3>
                   {whatsAppSettings.isAutoResponderEnabled && (
-                    <span style={{ fontSize: '10px', fontWeight: 700, color: '#059669', backgroundColor: '#ecfdf5', padding: '2px 6px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '9px', fontWeight: 700, color: '#059669', backgroundColor: '#ecfdf5', padding: '2px 6px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
                       <Bot size={10} /> AI Agent Active
                     </span>
                   )}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--text-muted)' }}>
-                  <span>{activeConv.familyPhone}</span>
-                  <span>•</span>
-                  <span>{activeConv.familyEmail}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px', flexWrap: 'nowrap' }}>
+                  <span style={{ whiteSpace: 'nowrap' }}>{activeConv.familyPhone}</span>
+                  <span style={{ color: 'var(--border-color)' }}>|</span>
+                  <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{activeConv.familyEmail}</span>
                 </div>
               </div>
             </div>
 
             {/* Header Action Controls */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
               <select
                 className="input-field"
                 value={activeConv.status}
                 onChange={(e) => updateConversationStatus(activeConv.id, e.target.value as ConversationStatus)}
-                style={{ width: '160px', fontSize: '12px', fontWeight: 600 }}
+                style={{ width: '150px', fontSize: '11px', fontWeight: 600, height: '30px', padding: '0 8px' }}
               >
                 <option value="Open">Status: Open</option>
                 <option value="Waiting for Family">Waiting for Family</option>
@@ -338,22 +357,24 @@ export const ConversationsView: React.FC = () => {
               <button
                 className={`btn btn-secondary btn-sm btn-icon-only ${activeConv.isPinned ? 'btn-primary' : ''}`}
                 onClick={() => togglePinConversation(activeConv.id)}
+                style={{ width: '30px', height: '30px', padding: 0 }}
                 title={activeConv.isPinned ? 'Unpin Conversation' : 'Pin Conversation'}
               >
-                <Pin size={16} />
+                <Pin size={14} />
               </button>
 
               <button
                 className="btn btn-secondary btn-sm btn-icon-only"
                 onClick={() => archiveConversation(activeConv.id)}
+                style={{ width: '30px', height: '30px', padding: 0 }}
                 title="Archive Conversation"
               >
-                <Archive size={16} />
+                <Archive size={14} />
               </button>
 
               <button
                 className="btn btn-ghost btn-sm btn-icon-only"
-                style={{ color: '#e11d48' }}
+                style={{ color: '#e11d48', width: '30px', height: '30px', padding: 0 }}
                 onClick={() => {
                   openConfirmDialog({
                     title: `Delete Conversation with ${activeConv.familyName}?`,
@@ -365,7 +386,7 @@ export const ConversationsView: React.FC = () => {
                 }}
                 title="Delete Thread"
               >
-                <Trash2 size={16} />
+                <Trash2 size={14} />
               </button>
             </div>
           </div>
@@ -373,8 +394,18 @@ export const ConversationsView: React.FC = () => {
           {/* Message Stream */}
           <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--bg-app)' }}>
             <div style={{ textAlign: 'center', margin: '8px 0' }}>
-              <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 10px', borderRadius: '999px', backgroundColor: 'var(--bg-subtle)', color: 'var(--text-muted)' }}>
-                Unified Chronological History • {activeConv.preferredChannel} Cloud API Active
+              <span style={{
+                fontSize: '10px',
+                fontWeight: 600,
+                padding: '4px 12px',
+                borderRadius: '999px',
+                backgroundColor: 'rgba(122, 144, 115, 0.08)',
+                color: 'var(--primary-accent)',
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                border: '1px solid rgba(122, 144, 115, 0.15)'
+              }}>
+                Unified History • {activeConv.preferredChannel} Cloud API Active
               </span>
             </div>
 
@@ -388,20 +419,42 @@ export const ConversationsView: React.FC = () => {
                   key={msg.id}
                   style={{
                     display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: isInternalNote ? 'center' : (isStaff || isAi) ? 'flex-end' : 'flex-start',
-                    width: '100%'
+                    justifyContent: isInternalNote ? 'center' : (isStaff || isAi) ? 'flex-end' : 'flex-start',
+                    width: '100%',
+                    gap: '10px'
                   }}
                 >
-                  {/* Internal Note Banner View */}
+                  {/* Left Avatar for Incoming Family Messages */}
+                  {!(isStaff || isAi || isInternalNote) && (
+                    <div style={{
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--primary-light)',
+                      color: 'var(--primary-accent)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 700,
+                      fontSize: '11px',
+                      marginTop: '16px',
+                      flexShrink: 0,
+                      boxShadow: 'var(--shadow-xs)',
+                      border: '1px solid var(--primary-border)'
+                    }}>
+                      {msg.senderName.split(' ').map(n => n[0]).join('')}
+                    </div>
+                  )}
+
+                  {/* Internal Note Card View */}
                   {isInternalNote ? (
                     <div
                       style={{
                         width: '90%',
-                        backgroundColor: '#fef3c7',
+                        backgroundColor: 'rgba(254, 243, 199, 0.55)',
                         border: '1px solid #fde68a',
                         color: '#92400e',
-                        borderRadius: 'var(--radius-md)',
+                        borderRadius: '10px',
                         padding: '12px 16px',
                         fontSize: '13px',
                         boxShadow: 'var(--shadow-xs)',
@@ -410,30 +463,31 @@ export const ConversationsView: React.FC = () => {
                         gap: '6px'
                       }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', fontWeight: 700 }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <Lock size={12} /> Confidential Internal Director Note • {msg.senderName}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Lock size={12} style={{ color: '#d97706' }} /> Confidential Director Note • {msg.senderName}
                         </span>
-                        <span>{msg.timestamp}</span>
+                        <span style={{ color: '#b45309' }}>{msg.timestamp}</span>
                       </div>
-                      <div style={{ color: '#78350f', fontWeight: 500 }}>{msg.content}</div>
+                      <div style={{ color: '#78350f', fontWeight: 500, lineHeight: 1.4 }}>{msg.content}</div>
                     </div>
                   ) : (
-                    /* Standard / AI Message Bubble */
+                    /* Standard / AI Message Bubble Container */
                     <div
                       style={{
-                        maxWidth: '75%',
+                        maxWidth: '70%',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '4px',
                         alignItems: (isStaff || isAi) ? 'flex-end' : 'flex-start'
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--text-muted)' }}>
-                        {isAi ? <Bot size={14} style={{ color: '#059669' }} /> : getChannelIcon(msg.channel)}
-                        <span style={{ fontWeight: 600 }}>{msg.senderName}</span>
+                      {/* Sender Metadata */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-muted)' }}>
+                        {isAi ? <Bot size={12} style={{ color: '#059669' }} /> : getChannelIcon(msg.channel)}
+                        <span style={{ fontWeight: 700 }}>{msg.senderName}</span>
                         {isAi && (
-                          <span style={{ fontSize: '10px', backgroundColor: '#ecfdf5', color: '#059669', padding: '1px 6px', borderRadius: '999px', fontWeight: 700 }}>
+                          <span style={{ fontSize: '8px', backgroundColor: '#ecfdf5', color: '#059669', padding: '1px 5px', borderRadius: '4px', fontWeight: 700 }}>
                             🤖 AI Assistant
                           </span>
                         )}
@@ -441,23 +495,28 @@ export const ConversationsView: React.FC = () => {
                         <span>{msg.timestamp}</span>
                       </div>
 
+                      {/* Bubble Text */}
                       <div
                         style={{
-                          padding: '12px 16px',
-                          borderRadius: (isStaff || isAi) ? '14px 14px 2px 14px' : '14px 14px 14px 2px',
-                          backgroundColor: isAi ? '#065f46' : isStaff ? 'var(--primary-accent)' : 'var(--bg-surface)',
+                          padding: '10px 14px',
+                          borderRadius: (isStaff || isAi) ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                          background: isAi 
+                            ? 'linear-gradient(135deg, #065f46 0%, #044e39 100%)' 
+                            : isStaff 
+                            ? 'linear-gradient(135deg, var(--primary-accent) 0%, #63775c 100%)' 
+                            : 'var(--bg-surface)',
                           color: (isStaff || isAi) ? '#ffffff' : 'var(--text-main)',
                           boxShadow: 'var(--shadow-xs)',
                           border: (isStaff || isAi) ? 'none' : '1px solid var(--border-color)',
-                          fontSize: '13px',
-                          lineHeight: 1.5
+                          fontSize: '12.5px',
+                          lineHeight: 1.55
                         }}
                       >
                         {msg.content}
 
-                        {/* Attachments Card */}
+                        {/* Attachments Card inside bubble */}
                         {msg.attachments && msg.attachments.length > 0 && (
-                          <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                          <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                             {msg.attachments.map((att, idx) => (
                               <div
                                 key={idx}
@@ -465,25 +524,28 @@ export const ConversationsView: React.FC = () => {
                                   display: 'flex',
                                   alignItems: 'center',
                                   gap: '8px',
-                                  padding: '8px 12px',
-                                  borderRadius: 'var(--radius-sm)',
-                                  backgroundColor: 'rgba(255,255,255,0.15)',
-                                  color: '#ffffff',
-                                  fontSize: '12px',
-                                  fontWeight: 600
+                                  padding: '6px 10px',
+                                  borderRadius: '6px',
+                                  backgroundColor: (isStaff || isAi) ? 'rgba(255,255,255,0.15)' : 'var(--bg-subtle)',
+                                  color: (isStaff || isAi) ? '#ffffff' : 'var(--text-main)',
+                                  fontSize: '11px',
+                                  fontWeight: 600,
+                                  border: (isStaff || isAi) ? 'none' : '1px solid var(--border-color)'
                                 }}
                               >
-                                <Paperclip size={14} />
-                                <span>{att.name} ({att.size})</span>
+                                <Paperclip size={12} />
+                                <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>{att.name}</span>
+                                <span style={{ fontSize: '9px', opacity: 0.7 }}>({att.size})</span>
                               </div>
                             ))}
                           </div>
                         )}
                       </div>
 
+                      {/* Read status icon */}
                       {(isStaff || isAi) && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: 'var(--text-subtle)' }}>
-                          <CheckCheck size={12} style={{ color: '#10b981' }} /> Delivered & Read
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9px', color: 'var(--text-subtle)' }}>
+                          <CheckCheck size={11} style={{ color: '#10b981' }} /> Delivered & Read
                         </div>
                       )}
                     </div>
@@ -491,83 +553,149 @@ export const ConversationsView: React.FC = () => {
                 </div>
               );
             })}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Message Composer */}
-          <form onSubmit={handleSendMessage} style={{ padding: '16px 20px', borderTop: '1px solid var(--border-color)', backgroundColor: 'var(--bg-surface)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {/* Toolbar: Channel selector + AI Generator + Templates */}
+          <form onSubmit={handleSendMessage} style={{ padding: '16px 20px', borderTop: '1px solid var(--border-color)', backgroundColor: 'var(--bg-surface)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {/* Toolbar Options Row */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Send Via:</span>
+              {/* Left Selector: Send Channel */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Send Via:</span>
                 <select
                   className="input-field"
                   value={selectedChannel}
                   onChange={(e) => setSelectedChannel(e.target.value as CommunicationChannel)}
-                  style={{ width: '160px', fontSize: '12px', fontWeight: 600 }}
+                  style={{ width: '140px', fontSize: '11px', fontWeight: 600, height: '28px', padding: '0 6px' }}
                 >
-                  <option value="WhatsApp">WhatsApp Message</option>
-                  <option value="Email">Email Response</option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Email">Email</option>
                   <option value="SMS">SMS Text</option>
                   <option value="Internal Note">Internal Note</option>
                 </select>
               </div>
 
+              {/* Right Action Buttons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <button
                   type="button"
                   className="btn btn-secondary btn-sm"
-                  style={{ color: '#059669', borderColor: '#a7f3d0', fontSize: '11px', gap: '4px' }}
+                  style={{ color: '#059669', borderColor: '#a7f3d0', fontSize: '10.5px', gap: '4px', height: '28px', padding: '0 10px' }}
                   onClick={() => generateAiReplyForThread(activeConv.id)}
                   title="Generate Empathetic AI Draft Reply"
                 >
-                  <Bot size={14} /> Generate AI Response
+                  <Sparkles size={11} /> Generate AI Response
                 </button>
 
                 <select
                   className="input-field"
                   onChange={(e) => e.target.value && handleApplyTemplate(e.target.value)}
                   defaultValue=""
-                  style={{ width: '190px', fontSize: '12px' }}
+                  style={{ width: '180px', fontSize: '11px', height: '28px', padding: '0 6px' }}
                 >
-                  <option value="" disabled>-- Quick Reply Template --</option>
+                  <option value="" disabled>-- Quick Templates --</option>
                   <option value="Dear family, we have received your request and updated the funeral arrangement schedule accordingly. Please let us know if you need anything else.">
-                    Arrangement Schedule Confirmation
+                    Schedule Confirmation
                   </option>
                   <option value="Please review the attached obituary copy for publication in the newspaper. Reply with your approval to proceed.">
-                    Obituary Draft Approval
+                    Obituary Approval request
                   </option>
                   <option value="Friendly reminder regarding invoice statement settlement for the upcoming service.">
-                    Invoice Settlement Reminder
+                    Invoice Settlement reminder
                   </option>
                   <option value="Our entire staff extends our deepest condolences to your family during this difficult time.">
-                    Sympathy & Condolence Note
+                    Sympathy Condolences
                   </option>
                 </select>
               </div>
             </div>
 
-            {/* Input & Send Area */}
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end' }}>
+            {/* Premium Textarea Composer Card */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              border: '1px solid var(--border-color)',
+              borderRadius: '12px',
+              backgroundColor: 'var(--bg-app)',
+              padding: '10px 14px',
+              gap: '8px'
+            }}>
               <textarea
-                className="input-field"
-                rows={2}
                 placeholder={selectedChannel === 'Internal Note' ? 'Write internal director note (hidden from family)...' : `Type your ${selectedChannel} message...`}
                 value={composerContent}
                 onChange={(e) => setComposerContent(e.target.value)}
-                style={{ flex: 1, resize: 'none' }}
+                rows={2}
+                style={{
+                  width: '100%',
+                  background: 'none',
+                  border: 'none',
+                  outline: 'none',
+                  resize: 'none',
+                  fontSize: '12.5px',
+                  color: 'var(--text-main)',
+                  fontFamily: 'inherit',
+                  lineHeight: 1.5
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage(e);
+                  }
+                }}
               />
-
-              <div style={{ display: 'flex', gap: '6px' }}>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-icon-only"
-                  onClick={() => setAttachedFiles([{ name: 'Arrangement_Summary.pdf', url: '#', size: '1.4 MB', type: 'pdf' }])}
-                  title="Attach File"
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-light)', paddingTop: '8px' }}>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-sm btn-icon-only"
+                    onClick={() => setAttachedFiles([{ name: 'Arrangement_Summary.pdf', url: '#', size: '1.4 MB', type: 'pdf' }])}
+                    style={{ width: '24px', height: '24px', padding: 0 }}
+                    title="Attach File"
+                  >
+                    <Paperclip size={14} style={{ color: 'var(--text-muted)' }} />
+                  </button>
+                  {attachedFiles.map((file, idx) => (
+                    <span 
+                      key={idx} 
+                      style={{ 
+                        fontSize: '9px', 
+                        backgroundColor: 'var(--primary-light)', 
+                        color: 'var(--primary-accent)', 
+                        padding: '2px 8px', 
+                        borderRadius: '4px', 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        gap: '4px',
+                        fontWeight: 600,
+                        border: '1px solid var(--primary-border)'
+                      }}
+                    >
+                      {file.name}
+                      <span 
+                        style={{ cursor: 'pointer', fontWeight: 800, marginLeft: '4px' }} 
+                        onClick={() => setAttachedFiles([])}
+                        title="Remove"
+                      >
+                        ×
+                      </span>
+                    </span>
+                  ))}
+                </div>
+                <button 
+                  type="submit" 
+                  className="btn btn-primary btn-sm" 
+                  style={{ 
+                    padding: '4px 16px', 
+                    fontSize: '11px',
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '6px', 
+                    borderRadius: '6px',
+                    boxShadow: 'var(--shadow-xs)' 
+                  }}
                 >
-                  <Paperclip size={18} />
-                </button>
-                <button type="submit" className="btn btn-primary" style={{ padding: '10px 18px' }}>
-                  <Send size={16} /> Send
+                  <Send size={11} /> Send
                 </button>
               </div>
             </div>
