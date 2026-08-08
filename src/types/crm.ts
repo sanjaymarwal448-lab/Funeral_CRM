@@ -248,6 +248,21 @@ export interface CompanySettings {
   taxRate: number;
 }
 
+export interface EmailSettings {
+  provider: 'EmailJS' | 'SMTP' | 'SendGrid' | 'Disabled';
+  emailjsServiceId: string;
+  emailjsTemplateId: string;
+  emailjsPublicKey: string;
+  senderEmail: string;
+}
+
+export interface SmsSettings {
+  provider: 'Twilio' | 'Vonage' | 'Disabled';
+  twilioAccountSid: string;
+  twilioAuthToken: string;
+  twilioPhoneNumber: string;
+}
+
 export interface AppNotification {
   id: string;
   title: string;

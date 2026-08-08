@@ -19,7 +19,9 @@ import {
   CommunicationChannel,
   ConversationStatus,
   ChatAttachment,
-  WhatsAppSettings
+  WhatsAppSettings,
+  EmailSettings,
+  SmsSettings
 } from '../types/crm';
 import { generateAiFuneralResponse } from '../services/whatsappService';
 
@@ -71,6 +73,12 @@ interface CRMContextType {
   updateWhatsAppSettings: (settings: Partial<WhatsAppSettings>) => void;
   receiveWhatsAppMessage: (familyPhone: string, content: string) => void;
   generateAiReplyForThread: (conversationId: string) => void;
+
+  // EMAIL & SMS INTEGRATIONS SETTINGS
+  emailSettings: EmailSettings;
+  updateEmailSettings: (settings: Partial<EmailSettings>) => void;
+  smsSettings: SmsSettings;
+  updateSmsSettings: (settings: Partial<SmsSettings>) => void;
 
   // CONVERSATIONS & INBOX CRUD
   conversations: Conversation[];
@@ -171,6 +179,21 @@ const INITIAL_WHATSAPP_SETTINGS: WhatsAppSettings = {
   aiModel: 'GPT-4o Funeral Care',
   aiTone: 'Empathetic & Dignified',
   autoCreateDraftCases: true
+};
+
+const INITIAL_EMAIL_SETTINGS: EmailSettings = {
+  provider: 'EmailJS',
+  emailjsServiceId: 'service_evg2026',
+  emailjsTemplateId: 'template_grief_update',
+  emailjsPublicKey: 'user_pk_994821048',
+  senderEmail: 'support@evergreenfunerals.co.uk'
+};
+
+const INITIAL_SMS_SETTINGS: SmsSettings = {
+  provider: 'Twilio',
+  twilioAccountSid: 'AC994821048290148201',
+  twilioAuthToken: 'token_secret_9948201048291',
+  twilioPhoneNumber: '+447700900077'
 };
 
 // INITIAL MOCK CONVERSATIONS & CHAT MESSAGES
@@ -927,6 +950,8 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // WhatsApp & AI Assistant State
   const [whatsAppSettings, setWhatsAppSettings] = useState<WhatsAppSettings>(INITIAL_WHATSAPP_SETTINGS);
+  const [emailSettings, setEmailSettings] = useState<EmailSettings>(INITIAL_EMAIL_SETTINGS);
+  const [smsSettings, setSmsSettings] = useState<SmsSettings>(INITIAL_SMS_SETTINGS);
 
   // Conversations & Messages State
   const [conversations, setConversations] = useState<Conversation[]>(INITIAL_CONVERSATIONS);
@@ -997,6 +1022,16 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateWhatsAppSettings = (newSettings: Partial<WhatsAppSettings>) => {
     setWhatsAppSettings(prev => ({ ...prev, ...newSettings }));
     addToast('WhatsApp Business Cloud API settings saved!');
+  };
+
+  const updateEmailSettings = (newSettings: Partial<EmailSettings>) => {
+    setEmailSettings(prev => ({ ...prev, ...newSettings }));
+    addToast('Email connection settings saved!');
+  };
+
+  const updateSmsSettings = (newSettings: Partial<SmsSettings>) => {
+    setSmsSettings(prev => ({ ...prev, ...newSettings }));
+    addToast('SMS connection settings saved!');
   };
 
   // SIMULATE INCOMING WHATSAPP MESSAGE & AI RESPONSE
@@ -1184,7 +1219,116 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setTimelineEvents(prev => [tlEvent, ...prev]);
     }
 
-    addToast(`Message dispatched via ${channel}`);
+    // Real API Dispatch integrations
+    if (targetConv) {
+      if (channel === 'WhatsApp') {
+        const isDefault = whatsAppSettings.accessToken.includes('FULL_META_ACCESS_TOKEN') || whatsAppSettings.phoneNumberId === '1058291048102';
+        if (!isDefault) {
+          fetch(`https://graph.facebook.com/v20.0/${whatsAppSettings.phoneNumberId}/messages`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${whatsAppSettings.accessToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              messaging_product: 'whatsapp',
+              to: targetConv.familyPhone,
+              type: 'text',
+              text: { body: content }
+            })
+          })
+          .then(res => {
+            if (res.ok) {
+              addToast('Real-time WhatsApp Cloud API Dispatch: Success!', 'success');
+            } else {
+              res.json().then(err => {
+                console.error('Meta API Error Details:', err);
+                addToast('Meta Cloud API returned an error. Check developer logs.', 'error');
+              });
+            }
+          })
+          .catch(err => {
+            console.error('Meta API dispatch failed:', err);
+            addToast('WhatsApp network dispatch failed.', 'error');
+          });
+        } else {
+          addToast(`Message dispatched via ${channel} (Simulated)`);
+        }
+      } else if (channel === 'Email') {
+        const isDefault = emailSettings.emailjsServiceId === 'service_evg2026';
+        if (!isDefault && emailSettings.provider === 'EmailJS') {
+          fetch('https://api.emailjs.com/api/v1.0/email/send', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              service_id: emailSettings.emailjsServiceId,
+              template_id: emailSettings.emailjsTemplateId,
+              user_id: emailSettings.emailjsPublicKey,
+              template_params: {
+                to_email: targetConv.familyEmail,
+                to_name: targetConv.familyName,
+                message: content,
+                subject: `Arrangement update from ${settings.companyName}`
+              }
+            })
+          })
+          .then(res => {
+            if (res.ok) {
+              addToast('EmailJS Dispatch: Sent successfully to ' + targetConv.familyEmail, 'success');
+            } else {
+              res.text().then(err => {
+                console.error('EmailJS Error Details:', err);
+                addToast('EmailJS dispatch failed. Check Service IDs.', 'error');
+              });
+            }
+          })
+          .catch(err => {
+            console.error('EmailJS dispatch failed:', err);
+            addToast('Email network dispatch failed.', 'error');
+          });
+        } else {
+          addToast(`Message dispatched via ${channel} (Simulated)`);
+        }
+      } else if (channel === 'SMS') {
+        const isDefault = smsSettings.twilioAccountSid === 'AC994821048290148201';
+        if (!isDefault && smsSettings.provider === 'Twilio') {
+          const authHeader = 'Basic ' + btoa(`${smsSettings.twilioAccountSid}:${smsSettings.twilioAuthToken}`);
+          const formData = new URLSearchParams();
+          formData.append('To', targetConv.familyPhone);
+          formData.append('From', smsSettings.twilioPhoneNumber);
+          formData.append('Body', content);
+
+          fetch(`https://api.twilio.com/2010-04-01/Accounts/${smsSettings.twilioAccountSid}/Messages.json`, {
+            method: 'POST',
+            headers: {
+              'Authorization': authHeader,
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData.toString()
+          })
+          .then(res => {
+            if (res.ok) {
+              addToast('Twilio SMS Dispatch: Success!', 'success');
+            } else {
+              res.json().then(err => {
+                console.error('Twilio Error Details:', err);
+                addToast('Twilio returned an error status. Check Credentials.', 'error');
+              });
+            }
+          })
+          .catch(err => {
+            console.error('Twilio network dispatch failed:', err);
+            addToast('Twilio SMS network dispatch failed.', 'error');
+          });
+        } else {
+          addToast(`Message dispatched via ${channel} (Simulated)`);
+        }
+      } else {
+        addToast(`Message dispatched via ${channel} (Simulated)`);
+      }
+    }
   };
 
   const updateConversationStatus = (id: string, status: ConversationStatus) => {
@@ -1697,7 +1841,11 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toggleStaffStatus,
         deleteStaff,
         settings,
-        updateSettings
+        updateSettings,
+        emailSettings,
+        updateEmailSettings,
+        smsSettings,
+        updateSmsSettings
       }}
     >
       {children}

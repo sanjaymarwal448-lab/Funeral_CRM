@@ -3,7 +3,16 @@ import { useCRM } from '../../context/CRMContext';
 import { Building2, Palette, ShieldCheck, Mail, Phone, Globe, MessageSquare, Bot, Save } from 'lucide-react';
 
 export const SettingsView: React.FC = () => {
-  const { settings, updateSettings, whatsAppSettings, updateWhatsAppSettings } = useCRM();
+  const { 
+    settings, 
+    updateSettings, 
+    whatsAppSettings, 
+    updateWhatsAppSettings,
+    emailSettings,
+    updateEmailSettings,
+    smsSettings,
+    updateSmsSettings
+  } = useCRM();
 
   // Settings form states
   const [companyName, setCompanyName] = useState(settings.companyName);
@@ -23,6 +32,19 @@ export const SettingsView: React.FC = () => {
   const [aiModel, setAiModel] = useState(whatsAppSettings.aiModel);
   const [aiTone, setAiTone] = useState(whatsAppSettings.aiTone);
   const [autoCreateDraftCases, setAutoCreateDraftCases] = useState(whatsAppSettings.autoCreateDraftCases);
+
+  // Email states
+  const [emailProvider, setEmailProvider] = useState(emailSettings.provider);
+  const [emailjsServiceId, setEmailjsServiceId] = useState(emailSettings.emailjsServiceId);
+  const [emailjsTemplateId, setEmailjsTemplateId] = useState(emailSettings.emailjsTemplateId);
+  const [emailjsPublicKey, setEmailjsPublicKey] = useState(emailSettings.emailjsPublicKey);
+  const [senderEmail, setSenderEmail] = useState(emailSettings.senderEmail);
+
+  // SMS states
+  const [smsProvider, setSmsProvider] = useState(smsSettings.provider);
+  const [twilioAccountSid, setTwilioAccountSid] = useState(smsSettings.twilioAccountSid);
+  const [twilioAuthToken, setTwilioAuthToken] = useState(smsSettings.twilioAuthToken);
+  const [twilioPhoneNumber, setTwilioPhoneNumber] = useState(smsSettings.twilioPhoneNumber);
 
   const handleSaveCompany = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +70,27 @@ export const SettingsView: React.FC = () => {
       aiModel,
       aiTone,
       autoCreateDraftCases
+    });
+  };
+
+  const handleSaveEmail = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateEmailSettings({
+      provider: emailProvider,
+      emailjsServiceId,
+      emailjsTemplateId,
+      emailjsPublicKey,
+      senderEmail
+    });
+  };
+
+  const handleSaveSms = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateSmsSettings({
+      provider: smsProvider,
+      twilioAccountSid,
+      twilioAuthToken,
+      twilioPhoneNumber
     });
   };
 
@@ -163,6 +206,177 @@ export const SettingsView: React.FC = () => {
           <button type="submit" className="btn btn-primary" style={{ alignSelf: 'flex-start', marginTop: '10px' }}>
             <Save size={16} /> Save WhatsApp & AI Settings
           </button>
+        </form>
+      </div>
+
+      {/* EMAIL GATEWAY CONNECTION */}
+      <div className="card" style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
+          <Mail size={22} style={{ color: '#2563eb' }} />
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Email Gateway Connection (EmailJS / SMTP)</h3>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Configure automated client notifications and obituary approval emails</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSaveEmail} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="input-group">
+              <label className="input-label">Email Service Provider</label>
+              <select className="input-field" value={emailProvider} onChange={(e) => setEmailProvider(e.target.value as any)}>
+                <option value="EmailJS">EmailJS Cloud API (Client-Side Send)</option>
+                <option value="SMTP">Direct SMTP Server (Requires Backend)</option>
+                <option value="SendGrid">SendGrid Web API</option>
+                <option value="Disabled">Disabled</option>
+              </select>
+            </div>
+
+            <div className="input-group">
+              <label className="input-label">Sender Email Address</label>
+              <input type="email" className="input-field" value={senderEmail} onChange={(e) => setSenderEmail(e.target.value)} />
+            </div>
+          </div>
+
+          {emailProvider === 'EmailJS' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', backgroundColor: 'var(--bg-app)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-main)' }}>EmailJS Credentials</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="input-group">
+                  <label className="input-label">Service ID</label>
+                  <input type="text" className="input-field" value={emailjsServiceId} onChange={(e) => setEmailjsServiceId(e.target.value)} />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Template ID</label>
+                  <input type="text" className="input-field" value={emailjsTemplateId} onChange={(e) => setEmailjsTemplateId(e.target.value)} />
+                </div>
+              </div>
+              <div className="input-group">
+                <label className="input-label">Public Key / User ID</label>
+                <input type="text" className="input-field" value={emailjsPublicKey} onChange={(e) => setEmailjsPublicKey(e.target.value)} />
+              </div>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
+            <button type="submit" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Save size={16} /> Save Email Settings
+            </button>
+            <button 
+              type="button" 
+              className="btn btn-secondary"
+              onClick={() => {
+                if (emailjsServiceId === 'service_evg2026') {
+                  alert('Please enter your own live EmailJS keys first to test the connection.');
+                  return;
+                }
+                fetch('https://api.emailjs.com/api/v1.0/email/send', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    service_id: emailjsServiceId,
+                    template_id: emailjsTemplateId,
+                    user_id: emailjsPublicKey,
+                    template_params: {
+                      to_email: senderEmail,
+                      to_name: 'Test Client',
+                      message: 'Test message from Eterna OS connection diagnostic.',
+                      subject: 'Eterna OS Email Verification Test'
+                    }
+                  })
+                })
+                .then(res => {
+                  if (res.ok) alert('Connection Test Successful! A verification email was sent to ' + senderEmail);
+                  else res.text().then(err => alert('Connection Test Failed: ' + err));
+                })
+                .catch(err => alert('Network Connection Test Failed: ' + err));
+              }}
+            >
+              Test Email Connection
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* SMS GATEWAY CONNECTION */}
+      <div className="card" style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
+          <Phone size={22} style={{ color: '#ea580c' }} />
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: 700 }}>SMS Gateway Connection (Twilio)</h3>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Configure Twilio SMS messaging to send status updates directly to family mobile numbers</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSaveSms} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="input-group">
+              <label className="input-label">SMS Provider</label>
+              <select className="input-field" value={smsProvider} onChange={(e) => setSmsProvider(e.target.value as any)}>
+                <option value="Twilio">Twilio API Gateway</option>
+                <option value="Vonage">Vonage SMS Gateway</option>
+                <option value="Disabled">Disabled</option>
+              </select>
+            </div>
+
+            <div className="input-group">
+              <label className="input-label">Twilio Sender Phone Number</label>
+              <input type="text" className="input-field" value={twilioPhoneNumber} onChange={(e) => setTwilioPhoneNumber(e.target.value)} />
+            </div>
+          </div>
+
+          {smsProvider === 'Twilio' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', backgroundColor: 'var(--bg-app)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-main)' }}>Twilio API Credentials</div>
+              <div className="input-group">
+                <label className="input-label">Account SID</label>
+                <input type="text" className="input-field" value={twilioAccountSid} onChange={(e) => setTwilioAccountSid(e.target.value)} />
+              </div>
+              <div className="input-group">
+                <label className="input-label">Auth Token</label>
+                <input type="password" className="input-field" value={twilioAuthToken} onChange={(e) => setTwilioAuthToken(e.target.value)} />
+              </div>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
+            <button type="submit" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Save size={16} /> Save SMS Settings
+            </button>
+            <button 
+              type="button" 
+              className="btn btn-secondary"
+              onClick={() => {
+                if (twilioAccountSid === 'AC994821048290148201') {
+                  alert('Please enter your own live Twilio keys first to test the connection.');
+                  return;
+                }
+                const targetPhone = prompt('Enter recipient mobile number (E.164 format, e.g. +447700900077):');
+                if (!targetPhone) return;
+
+                const authHeader = 'Basic ' + btoa(`${twilioAccountSid}:${twilioAuthToken}`);
+                const formData = new URLSearchParams();
+                formData.append('To', targetPhone);
+                formData.append('From', twilioPhoneNumber);
+                formData.append('Body', 'Eterna OS Twilio Connection Test Successful.');
+
+                fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Messages.json`, {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': authHeader,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  body: formData.toString()
+                })
+                .then(res => {
+                  if (res.ok) alert('Connection Test Successful! A verification text was dispatched to ' + targetPhone);
+                  else res.json().then(err => alert('Twilio dispatch failed: ' + err.message));
+                })
+                .catch(err => alert('Network Connection Test Failed: ' + err));
+              }}
+            >
+              Test SMS Connection
+            </button>
+          </div>
         </form>
       </div>
 
