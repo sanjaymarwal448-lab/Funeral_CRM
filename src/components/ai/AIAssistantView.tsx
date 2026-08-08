@@ -68,7 +68,7 @@ export const AIAssistantView: React.FC = () => {
           </div>
 
           {/* Terminal Display */}
-          <div style={{ flex: 1, padding: '20px', backgroundColor: '#1e242b', color: '#38bdf8', fontFamily: 'monospace', fontSize: '12px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ flex: 1, padding: '20px 14px 20px 20px', backgroundColor: '#1e242b', color: '#38bdf8', fontFamily: 'monospace', fontSize: '12px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {terminalLogs.map(log => (
               <div
                 key={log.id}

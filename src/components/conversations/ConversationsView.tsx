@@ -210,7 +210,7 @@ export const ConversationsView: React.FC = () => {
         </div>
 
         {/* Conversations List */}
-        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', paddingRight: '4px' }}>
           {filteredConversations.length === 0 ? (
             <div style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
               No conversations found.
@@ -405,7 +405,7 @@ export const ConversationsView: React.FC = () => {
           </div>
 
           {/* Message Stream */}
-          <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--bg-app)' }}>
+          <div style={{ flex: 1, padding: '20px 14px 20px 20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--bg-app)' }}>
             <div style={{ textAlign: 'center', margin: '8px 0' }}>
               <span style={{
                 fontSize: '10px',
@@ -722,7 +722,7 @@ export const ConversationsView: React.FC = () => {
 
       {/* ================= RIGHT PANEL: CONVERSATION DETAILS ================= */}
       {activeConv ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto', paddingRight: '6px' }}>
           {/* Family Contact Card */}
           <div className="card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <h4 style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--primary-accent)', fontWeight: 700 }}>

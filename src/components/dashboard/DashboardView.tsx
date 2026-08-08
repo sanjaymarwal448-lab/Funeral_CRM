@@ -283,7 +283,7 @@ export const DashboardView: React.FC = () => {
             </div>
 
             {/* Scrollable list with fixed heights */}
-            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', position: 'relative', paddingLeft: '14px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', position: 'relative', paddingLeft: '14px', paddingRight: '6px' }}>
               {scheduleItems.length === 0 ? (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '12px', gap: '8px', textAlign: 'center', padding: '20px 0' }}>
                   <span>No services scheduled for today.</span>
@@ -407,7 +407,7 @@ export const DashboardView: React.FC = () => {
               </h3>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '6px' }}>
               {aiAlerts.length === 0 ? (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#059669', fontSize: '12px', gap: '8px', padding: '20px 0' }}>
                   <CheckCircle size={32} />
@@ -558,7 +558,7 @@ export const DashboardView: React.FC = () => {
           {/* Recent Activity Card */}
           <div className="card" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: '14px 16px' }}>
             <h3 style={{ fontSize: '13px', fontWeight: 700, margin: 0, marginBottom: '10px', flexShrink: 0 }}>Recent Activity</h3>
-            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingRight: '6px' }}>
               {notifications.length === 0 ? (
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '11px', textAlign: 'center' }}>
                   No recent operations activity.
