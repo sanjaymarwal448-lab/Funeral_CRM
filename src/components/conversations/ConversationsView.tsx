@@ -301,50 +301,46 @@ export const ConversationsView: React.FC = () => {
       {activeConv ? (
         <div className="card" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {/* Thread Header */}
-          <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'var(--bg-subtle)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
-              <div style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '12px',
-                background: 'linear-gradient(135deg, var(--primary-accent) 0%, #5d6f56 100%)',
-                color: '#ffffff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 700,
-                fontSize: '16px',
-                boxShadow: 'var(--shadow-sm)',
-                flexShrink: 0
-              }}>
-                {activeConv.familyName.charAt(0)}
-              </div>
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                  <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-main)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {activeConv.familyName}
-                  </h3>
-                  {whatsAppSettings.isAutoResponderEnabled && (
-                    <span style={{ fontSize: '9px', fontWeight: 700, color: '#059669', backgroundColor: '#ecfdf5', padding: '2px 6px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
-                      <Bot size={10} /> AI Agent Active
-                    </span>
-                  )}
+          <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: 'var(--bg-subtle)' }}>
+            {/* Top Row: Avatar + Name + Auto-Responder + Status Dropdown */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+                <div style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, var(--primary-accent) 0%, #5d6f56 100%)',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  fontSize: '15px',
+                  boxShadow: 'var(--shadow-xs)',
+                  flexShrink: 0
+                }}>
+                  {activeConv.familyName.charAt(0)}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px', flexWrap: 'nowrap' }}>
-                  <span style={{ whiteSpace: 'nowrap' }}>{activeConv.familyPhone}</span>
-                  <span style={{ color: 'var(--border-color)' }}>|</span>
-                  <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{activeConv.familyEmail}</span>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-main)', margin: 0, lineHeight: 1.2 }}>
+                      {activeConv.familyName}
+                    </h3>
+                    {whatsAppSettings.isAutoResponderEnabled && (
+                      <span style={{ fontSize: '9px', fontWeight: 700, color: '#059669', backgroundColor: '#ecfdf5', padding: '2px 6px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                        <Bot size={10} /> AI Agent Active
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Header Action Controls */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+              {/* Status Select */}
               <select
                 className="input-field"
                 value={activeConv.status}
                 onChange={(e) => updateConversationStatus(activeConv.id, e.target.value as ConversationStatus)}
-                style={{ width: '150px', fontSize: '11px', fontWeight: 600, height: '30px', padding: '0 8px' }}
+                style={{ width: '150px', fontSize: '11px', fontWeight: 600, height: '30px', padding: '0 8px', flexShrink: 0 }}
               >
                 <option value="Open">Status: Open</option>
                 <option value="Waiting for Family">Waiting for Family</option>
@@ -353,41 +349,58 @@ export const ConversationsView: React.FC = () => {
                 <option value="Closed">Closed</option>
                 <option value="Archived">Archived</option>
               </select>
+            </div>
 
-              <button
-                className={`btn btn-secondary btn-sm btn-icon-only ${activeConv.isPinned ? 'btn-primary' : ''}`}
-                onClick={() => togglePinConversation(activeConv.id)}
-                style={{ width: '30px', height: '30px', padding: 0 }}
-                title={activeConv.isPinned ? 'Unpin Conversation' : 'Pin Conversation'}
-              >
-                <Pin size={14} />
-              </button>
+            {/* Bottom Row: Contact Info Details & Action Buttons */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', borderTop: '1px solid var(--border-light)', paddingTop: '8px', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}>
+                  <Phone size={12} style={{ color: 'var(--text-subtle)' }} />
+                  {activeConv.familyPhone}
+                </span>
+                <span style={{ color: 'var(--border-light)' }}>|</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}>
+                  <Mail size={12} style={{ color: 'var(--text-subtle)' }} />
+                  {activeConv.familyEmail}
+                </span>
+              </div>
 
-              <button
-                className="btn btn-secondary btn-sm btn-icon-only"
-                onClick={() => archiveConversation(activeConv.id)}
-                style={{ width: '30px', height: '30px', padding: 0 }}
-                title="Archive Conversation"
-              >
-                <Archive size={14} />
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                <button
+                  className={`btn btn-secondary btn-sm btn-icon-only ${activeConv.isPinned ? 'btn-primary' : ''}`}
+                  onClick={() => togglePinConversation(activeConv.id)}
+                  style={{ width: '28px', height: '28px', padding: 0 }}
+                  title={activeConv.isPinned ? 'Unpin Conversation' : 'Pin Conversation'}
+                >
+                  <Pin size={13} />
+                </button>
 
-              <button
-                className="btn btn-ghost btn-sm btn-icon-only"
-                style={{ color: '#e11d48', width: '30px', height: '30px', padding: 0 }}
-                onClick={() => {
-                  openConfirmDialog({
-                    title: `Delete Conversation with ${activeConv.familyName}?`,
-                    message: 'Are you sure you want to delete this message thread permanently?',
-                    confirmText: 'Delete Thread',
-                    variant: 'danger',
-                    onConfirm: () => deleteConversation(activeConv.id)
-                  });
-                }}
-                title="Delete Thread"
-              >
-                <Trash2 size={14} />
-              </button>
+                <button
+                  className="btn btn-secondary btn-sm btn-icon-only"
+                  onClick={() => archiveConversation(activeConv.id)}
+                  style={{ width: '28px', height: '28px', padding: 0 }}
+                  title="Archive Conversation"
+                >
+                  <Archive size={13} />
+                </button>
+
+                <button
+                  className="btn btn-ghost btn-sm btn-icon-only"
+                  style={{ color: '#e11d48', width: '28px', height: '28px', padding: 0 }}
+                  onClick={() => {
+                    openConfirmDialog({
+                      title: `Delete Conversation with ${activeConv.familyName}?`,
+                      message: 'Are you sure you want to delete this message thread permanently?',
+                      confirmText: 'Delete Thread',
+                      variant: 'danger',
+                      onConfirm: () => deleteConversation(activeConv.id)
+                    });
+                  }}
+                  title="Delete Thread"
+                >
+                  <Trash2 size={13} />
+                </button>
+              </div>
             </div>
           </div>
 
